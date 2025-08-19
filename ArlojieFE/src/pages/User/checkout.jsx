@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Tambahkan ini
 import Navbar from "../../components/navbar";
 import TermsModal from "../../components/termsmodal";
 import Footer from "../../components/footer";
@@ -13,6 +14,7 @@ export const Checkout = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const navigate = useNavigate(); // Tambahkan ini
 
   // State untuk kuantitas dan harga
   const [quantity, setQuantity] = useState(2);
@@ -439,7 +441,10 @@ export const Checkout = () => {
                 </button>
               </span>
             </label>
-            <button className="bg-black text-white px-12 py-3 rounded-2xl font-medium text-lg hover:bg-gray-900 transition-colors">
+            <button
+              className="bg-black text-white px-12 py-3 rounded-2xl font-medium text-lg hover:bg-gray-900 transition-colors"
+              onClick={() => navigate("/ordermanage")} // Tambahkan ini
+            >
               Buat Pesanan
             </button>
           </div>
@@ -453,4 +458,3 @@ export const Checkout = () => {
 };
 
 export default Checkout;
-

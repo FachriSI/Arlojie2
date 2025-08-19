@@ -4,6 +4,7 @@ import Order from "../../assets/ordermanage/order.svg";
 import Deliver from "../../components/delivered";
 import Footer from "../../components/footer";
 import Detail from "../../components/detail";
+import Rating from "../../components/rating";
 
 export const Ordermanage = () => {
   useEffect(() => {
@@ -11,7 +12,8 @@ export const Ordermanage = () => {
   }, []);
 
   const [filter, setFilter] = useState("All");
-  const [selectedOrder, setSelectedOrder] = useState(null); // Tambahkan state untuk order yang dipilih
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showRating, setShowRating] = useState(false); // Tambah state
 
   const orders = [
     {
@@ -47,6 +49,49 @@ export const Ordermanage = () => {
     Paid: "bg-purple-200 text-purple-700",
     Shipped: "bg-yellow-200 text-yellow-700",
   };
+
+  // Jika sedang menampilkan Rating
+  if (showRating && selectedOrder) {
+    return (
+      <div className="min-h-screen bg-white">
+        <div className="relative z-50 bg-black">
+          <Navbar />
+        </div>
+        <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
+          <img
+            src={Order}
+            alt="Arlojie Order"
+            className="absolute inset-0 w-full h-full object-cover opacity-80"
+          />
+          <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16">
+            <h1 className="text-white text-3xl md:text-4xl font-bold font-serif mb-2">
+              Order Manage
+            </h1>
+            <p className="text-white/80 font-sans text-lg">
+              Kelola Pesanan Anda
+            </p>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-2 md:px-4 mt-6 md:mt-10">
+          <Rating
+            onClose={() => setShowRating(false)}
+            onSubmit={() => setShowRating(false)}
+          />
+          <button
+            className="mt-6 px-6 py-2 rounded bg-black text-white"
+            onClick={() => {
+              setShowRating(false);
+              setSelectedOrder(null);
+            }}
+          >
+            Kembali
+          </button>
+        </div>
+        <div className="mb-12"></div>
+        <Footer />
+      </div>
+    );
+  }
 
   // Jika ada order yang dipilih, tampilkan Detail
   if (selectedOrder) {
@@ -185,7 +230,10 @@ export const Ordermanage = () => {
                   <div className="w-full md:w-auto flex justify-center md:justify-end mt-2 md:mt-0">
                     <button
                       className="bg-black text-white rounded-full px-8 py-3 font-semibold text-base md:text-lg shadow hover:bg-gray-900 transition-colors w-full md:w-auto"
-                      onClick={() => setSelectedOrder(order)} // Ubah jadi setSelectedOrder
+                      onClick={() => {
+                        setSelectedOrder(order);
+                        if (order.status === "Delivered") setShowRating(true);
+                      }}
                     >
                       {order.status === "Delivered" ? "Beri Nilai" : "Detail"}
                     </button>
@@ -195,6 +243,24 @@ export const Ordermanage = () => {
           )}
         </div>
       </div>
+      {/* Modal Rating */}
+      {showRating && selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative">
+            <Rating
+              onClose={() => setShowRating(false)}
+              onSubmit={() => setShowRating(false)}
+            />
+            <button
+              className="absolute top-2 right-2 text-black text-2xl font-bold"
+              onClick={() => setShowRating(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       <div className="mb-12"></div>
       <Footer />
     </div>
