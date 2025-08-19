@@ -80,12 +80,16 @@ exports.placeOrder = async (req, res) => {
     );
 
     // Hapus item dari keranjang
-    await CartItem.destroy({ where: { user_id } }, { transaction: t });
+    await CartItem.destroy(
+      { where: { user_id } },
+      { transaction: t }
+    );
 
     await t.commit();
-    res
-      .status(201)
-      .json({ message: 'Pesanan berhasil dibuat!', orderId: order.id });
+    res.status(201).json({
+      message: 'Pesanan berhasil dibuat!',
+      orderId: order.id
+    });
   } catch (error) {
     await t.rollback();
     res.status(500).json({ error: error.message });
@@ -97,6 +101,22 @@ exports.getOrderHistory = async (req, res) => {
     const user_id = req.user.id;
     const orders = await Order.findAll({ where: { user_id } });
     res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.getOrderDetails = async (req, res) => {
+  const orderId = req.params.id;
+  try {
+    const order = await Order.findByPk(orderId, {
+      include: [{ model: OrderItem, include: [Product] }]
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Pesanan tidak ditemukan' });
+    }
+
+    res.json(order);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

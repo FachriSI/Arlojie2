@@ -8,6 +8,7 @@ const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const associations = require('./models/associations');
+const adminOrderRoutes = require('./routes/adminOrderRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,8 +20,8 @@ app.use('/api', dashboardRoutes);
 app.use('/api', productRoutes);
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use('/api', cartRoutes); 
-app.use('/api', orderRoutes); 
-
+app.use('/api/orders', orderRoutes); 
+app.use('/api/admin', adminOrderRoutes);
 
 app.get('/', (req, res) => {
   res.send('API berjalan dengan baik!');
