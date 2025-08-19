@@ -4,7 +4,7 @@ import KeranjangArlojie from "../../assets/keranjang/keranjangarlojie.svg";
 import Watch1 from "../../assets/Home/jam1.svg";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
-
+import Alamat from "../../components/alamat";
 const Keranjang = () => {
   const [cartItems, setCartItems] = useState([
     {
@@ -18,6 +18,7 @@ const Keranjang = () => {
 
   const [estimatedShipping] = useState(25000);
   const navigate = useNavigate();
+  const [showAlamatForm, setShowAlamatForm] = useState(false);
 
   useEffect(() => {
     document.title = "Arlojie | Keranjang";
@@ -45,6 +46,20 @@ const Keranjang = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Modal Alamat */}
+      {showAlamatForm && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative">
+            <Alamat
+              onSubmit={() => {
+                setShowAlamatForm(false);
+                navigate("/checkout");
+              }}
+              onCancel={() => setShowAlamatForm(false)}
+            />
+          </div>
+        </div>
+      )}
       {/* Navbar */}
       <div className="relative z-50 bg-black">
         <div
@@ -56,7 +71,6 @@ const Keranjang = () => {
           <Navbar />
         </div>
       </div>
-
       {/* Hero Section */}
       <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
         <img
@@ -79,7 +93,6 @@ const Keranjang = () => {
           </p>
         </div>
       </div>
-
       {/* Cart Content */}
       <div className="max-w-6xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -93,7 +106,6 @@ const Keranjang = () => {
               <div className="col-span-1 text-center">Aksi</div>
             </div>
           </div>
-
           {/* Cart Items */}
           <div className="divide-y bg-white">
             {cartItems.map((item) => (
@@ -110,14 +122,12 @@ const Keranjang = () => {
                       <h3 className="font-medium text-gray-900">{item.name}</h3>
                     </div>
                   </div>
-
                   {/* Price */}
                   <div className="col-span-2 text-center">
                     <span className="text-gray-900 font-medium">
                       Rp{item.price.toLocaleString("id-ID")}
                     </span>
                   </div>
-
                   {/* Quantity */}
                   <div className="col-span-2 flex justify-center">
                     <div className="flex items-center border border-gray-300 rounded-lg">
@@ -138,14 +148,12 @@ const Keranjang = () => {
                       </button>
                     </div>
                   </div>
-
                   {/* Total Price */}
                   <div className="col-span-2 text-center">
                     <span className="text-gray-900 font-medium">
                       Rp{(item.price * item.quantity).toLocaleString("id-ID")}
                     </span>
                   </div>
-
                   {/* Actions */}
                   <div className="col-span-1 text-center">
                     <button
@@ -171,7 +179,6 @@ const Keranjang = () => {
               </div>
             ))}
           </div>
-
           {/* Cart Summary */}
           <div className="bg-gray-50 px-6 py-6 border-t">
             <div className="flex justify-end">
@@ -181,13 +188,11 @@ const Keranjang = () => {
                   <span>Subtotal:</span>
                   <span>Rp{subtotal.toLocaleString("id-ID")}</span>
                 </div>
-
                 {/* Shipping */}
                 <div className="flex justify-between text-gray-700">
                   <span>Estimasi Ongkir:</span>
                   <span>Rp{estimatedShipping.toLocaleString("id-ID")}</span>
                 </div>
-
                 {/* Grand Total */}
                 <div className="flex justify-between items-center pt-4 border-t border-gray-300">
                   <span className="text-lg font-semibold text-gray-900">
@@ -197,11 +202,10 @@ const Keranjang = () => {
                     Rp{grandTotal.toLocaleString("id-ID")}
                   </span>
                 </div>
-
                 {/* Checkout Button */}
                 <button
                   className="w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors"
-                  onClick={() => navigate("/checkout")}
+                  onClick={() => setShowAlamatForm(true)}
                 >
                   Checkout
                 </button>
