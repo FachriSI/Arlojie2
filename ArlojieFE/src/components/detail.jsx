@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import CancelModal from "../components/cancel"; // Import modal cancel
 
 const statusList = [
   { label: "Pending", number: 1 },
@@ -9,6 +10,8 @@ const statusList = [
 ];
 
 const Detail = ({ order }) => {
+  const [showCancel, setShowCancel] = useState(false);
+
   // Data default jika props order tidak ada
   const data = order || {
     nama: "Akmal",
@@ -22,6 +25,12 @@ const Detail = ({ order }) => {
 
   // Tentukan step aktif berdasarkan status
   const currentStep = statusList.findIndex((s) => s.label === data.status) + 1;
+
+  const handleCancelOrder = () => {
+    // Lakukan aksi pembatalan pesanan di sini
+    setShowCancel(false);
+    // ...aksi lain jika perlu...
+  };
 
   return (
     <div className="p-8">
@@ -81,9 +90,17 @@ const Detail = ({ order }) => {
         </div>
       </div>
       <div className="flex justify-center mt-4">
-        <button className="border-2 border-red-500 text-red-500 rounded-xl px-8 py-3 font-medium bg-transparent hover:bg-red-50 transition-colors">
+        <button
+          className="mt-6 px-6 py-2 rounded border border-red-500 text-red-500 hover:bg-red-50 font-semibold"
+          onClick={() => setShowCancel(true)}
+        >
           Batalkan Pesanan
         </button>
+        <CancelModal
+          open={showCancel}
+          onClose={() => setShowCancel(false)}
+          onConfirm={handleCancelOrder}
+        />
       </div>
     </div>
   );

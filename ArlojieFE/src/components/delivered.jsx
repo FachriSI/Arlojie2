@@ -45,7 +45,7 @@ const Delivered = () => (
         <div className="font-bold text-lg md:text-xl mb-2">
           Total: {order.total}
         </div>
-        <div className="w-full flex justify-center mt-2">
+        <div className="w-full flex justify-end mt-2">
           <button className="bg-black text-white rounded-full px-8 py-3 font-semibold text-base md:text-lg shadow hover:bg-gray-900 transition-colors w-full md:w-auto">
             Beri Nilai
           </button>

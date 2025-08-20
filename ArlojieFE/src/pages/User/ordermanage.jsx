@@ -25,7 +25,7 @@ export const Ordermanage = () => {
     {
       id: "405926",
       date: "02 April 2025",
-      status: "Delivered",
+      status: "Shipped",
       total: "Rp11.100.000",
     },
     {
@@ -39,6 +39,13 @@ export const Ordermanage = () => {
       date: "14 Maret 2025",
       status: "Pending",
       total: "Rp875.000",
+    },
+
+    {
+      id: "957394",
+      date: "23 Maret 2025",
+      status: "Paid",
+      total: "Rp815.000",
     },
   ];
 
@@ -194,53 +201,49 @@ export const Ordermanage = () => {
         </div>
         {/* List Order */}
         <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
-          {filter === "Delivered" ? (
-            <Deliver />
-          ) : (
-            orders
-              .filter((order) => filter === "All" || order.status === filter)
-              .map((order) => (
-                <div
-                  key={order.id}
-                  className="bg-white rounded-xl shadow-sm border p-4 md:p-6 flex flex-col gap-3 md:flex-row justify-between items-start md:items-center"
-                >
-                  <div className="flex-1">
-                    <div className="font-bold text-lg md:text-xl mb-2">
-                      Order ID #{order.id}
-                    </div>
-                    <div className="text-black/80 mb-2 text-base md:text-lg">
-                      Tanggal: {order.date}
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-medium text-base md:text-lg">
-                        Status:
-                      </span>
-                      <span
-                        className={`px-4 py-1 rounded-full text-base md:text-lg font-semibold ${
-                          statusColor[order.status]
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
-                    <div className="font-bold text-lg md:text-xl mb-2">
-                      Total: {order.total}
-                    </div>
+          {orders
+            .filter((order) => filter === "All" || order.status === filter)
+            .map((order) => (
+              <div
+                key={order.id}
+                className="bg-white rounded-xl shadow-sm border p-4 md:p-6 flex flex-col gap-3 md:flex-row justify-between items-start md:items-center"
+              >
+                <div className="flex-1">
+                  <div className="font-bold text-lg md:text-xl mb-2">
+                    Order ID #{order.id}
                   </div>
-                  <div className="w-full md:w-auto flex justify-center md:justify-end mt-2 md:mt-0">
-                    <button
-                      className="bg-black text-white rounded-full px-8 py-3 font-semibold text-base md:text-lg shadow hover:bg-gray-900 transition-colors w-full md:w-auto"
-                      onClick={() => {
-                        setSelectedOrder(order);
-                        if (order.status === "Delivered") setShowRating(true);
-                      }}
+                  <div className="text-black/80 mb-2 text-base md:text-lg">
+                    Tanggal: {order.date}
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-medium text-base md:text-lg">
+                      Status:
+                    </span>
+                    <span
+                      className={`px-4 py-1 rounded-full text-base md:text-lg font-semibold ${
+                        statusColor[order.status]
+                      }`}
                     >
-                      {order.status === "Delivered" ? "Beri Nilai" : "Detail"}
-                    </button>
+                      {order.status}
+                    </span>
+                  </div>
+                  <div className="font-bold text-lg md:text-xl mb-2">
+                    Total: {order.total}
                   </div>
                 </div>
-              ))
-          )}
+                <div className="w-full md:w-auto flex justify-center md:justify-end mt-2 md:mt-0">
+                  <button
+                    className="bg-black text-white rounded-full px-8 py-3 font-semibold text-base md:text-lg shadow hover:bg-gray-900 transition-colors w-full md:w-auto"
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      if (order.status === "Delivered") setShowRating(true);
+                    }}
+                  >
+                    {order.status === "Delivered" ? "Beri Nilai" : "Detail"}
+                  </button>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
       {/* Modal Rating */}
