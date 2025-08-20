@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/navbar";
 import Order from "../../assets/ordermanage/order.svg";
-import Deliver from "../../components/delivered";
 import Footer from "../../components/footer";
 import Detail from "../../components/detail";
 import Rating from "../../components/rating";
@@ -13,7 +12,7 @@ export const Ordermanage = () => {
 
   const [filter, setFilter] = useState("All");
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [showRating, setShowRating] = useState(false); // Tambah state
+  const [showRating, setShowRating] = useState(false);
 
   const orders = [
     {
@@ -25,13 +24,13 @@ export const Ordermanage = () => {
     {
       id: "405926",
       date: "02 April 2025",
-      status: "Shipped",
+      status: "Delivered",
       total: "Rp11.100.000",
     },
     {
       id: "102475",
       date: "23 Maret 2025",
-      status: "Delivered",
+      status: "Shipped",
       total: "Rp2.500.000",
     },
     {
@@ -40,9 +39,8 @@ export const Ordermanage = () => {
       status: "Pending",
       total: "Rp875.000",
     },
-
     {
-      id: "957394",
+      id: "9879881",
       date: "23 Maret 2025",
       status: "Paid",
       total: "Rp815.000",
@@ -57,13 +55,15 @@ export const Ordermanage = () => {
     Shipped: "bg-yellow-200 text-yellow-700",
   };
 
-  // Jika sedang menampilkan Rating
-  if (showRating && selectedOrder) {
+  // Jika user klik order → tampilkan detail
+  if (selectedOrder && !showRating) {
     return (
       <div className="min-h-screen bg-white">
         <div className="relative z-50 bg-black">
           <Navbar />
         </div>
+
+        {/* Hero */}
         <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
           <img
             src={Order}
@@ -79,55 +79,8 @@ export const Ordermanage = () => {
             </p>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-2 md:px-4 mt-6 md:mt-10">
-          <Rating
-            onClose={() => setShowRating(false)}
-            onSubmit={() => setShowRating(false)}
-          />
-          <button
-            className="mt-6 px-6 py-2 rounded bg-black text-white"
-            onClick={() => {
-              setShowRating(false);
-              setSelectedOrder(null);
-            }}
-          >
-            Kembali
-          </button>
-        </div>
-        <div className="mb-12"></div>
-        <Footer />
-      </div>
-    );
-  }
 
-  // Jika ada order yang dipilih, tampilkan Detail
-  if (selectedOrder) {
-    return (
-      <div className="min-h-screen bg-white">
-        <div className="relative z-50 bg-black">
-          <Navbar />
-        </div>
-        <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
-          <img
-            src={Order}
-            alt="Arlojie Order"
-            className="absolute inset-0 w-full h-full object-cover opacity-80"
-          />
-          <div
-            className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16"
-            data-aos="fade-right"
-            data-aos-delay="300"
-            data-aos-duration="1200"
-          >
-            <h1 className="text-white text-3xl md:text-4xl font-bold font-serif mb-2">
-              Order Manage
-            </h1>
-            <p className="text-white/80 font-sans text-lg">
-              Kelola Pesanan Anda
-            </p>
-          </div>
-        </div>
-        {/* Tampilkan Detail, bisa kirim props order ke Detail jika perlu */}
+        {/* Detail */}
         <div className="max-w-7xl mx-auto px-2 md:px-4 mt-6 md:mt-10">
           <Detail order={selectedOrder} />
           <button
@@ -137,6 +90,7 @@ export const Ordermanage = () => {
             Kembali
           </button>
         </div>
+
         <div className="mb-12"></div>
         <Footer />
       </div>
@@ -145,32 +99,27 @@ export const Ordermanage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navbar sudah handle sidebar di mobile */}
+      {/* Navbar */}
       <div className="relative z-50 bg-black">
         <Navbar />
       </div>
-      {/* Hero Section */}
+
+      {/* Hero */}
       <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
-        {/* Background Image - Full */}
         <img
           src={Order}
           alt="Arlojie Order"
           className="absolute inset-0 w-full h-full object-cover opacity-80"
         />
-        {/* Content */}
-        <div
-          className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16"
-          data-aos="fade-right"
-          data-aos-delay="300"
-          data-aos-duration="1200"
-        >
+        <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16">
           <h1 className="text-white text-3xl md:text-4xl font-bold font-serif mb-2">
             Order Manage
           </h1>
           <p className="text-white/80 font-sans text-lg">Kelola Pesanan Anda</p>
         </div>
       </div>
-      {/* Filter Riwayat Pemesanan */}
+
+      {/* Filter */}
       <div className="max-w-7xl mx-auto px-2 md:px-4 mt-6 md:mt-10">
         <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">
           Riwayat Pemesanan
@@ -189,8 +138,7 @@ export const Ordermanage = () => {
                     filter === status
                       ? "bg-black text-white border-black"
                       : "bg-white text-black border-black hover:bg-gray-200"
-                  }
-                `}
+                  }`}
                   onClick={() => setFilter(status)}
                 >
                   {status}
@@ -199,10 +147,13 @@ export const Ordermanage = () => {
             )}
           </div>
         </div>
-        {/* List Order */}
+
+        {/* Orders */}
         <div className="mt-4 md:mt-8 space-y-4 md:space-y-6">
           {orders
-            .filter((order) => filter === "All" || order.status === filter)
+            .filter((order) =>
+              filter === "All" ? true : order.status === filter
+            )
             .map((order) => (
               <div
                 key={order.id}
@@ -233,7 +184,7 @@ export const Ordermanage = () => {
                 </div>
                 <div className="w-full md:w-auto flex justify-center md:justify-end mt-2 md:mt-0">
                   <button
-                    className="bg-black text-white rounded-full px-8 py-3 font-semibold text-base md:text-lg shadow hover:bg-gray-900 transition-colors w-full md:w-auto"
+                    className="bg-[#0B132A] text-white rounded-full px-12 py-3 font-semibold text-lg shadow hover:bg-[#1a233a] transition-colors mx-auto block"
                     onClick={() => {
                       setSelectedOrder(order);
                       if (order.status === "Delivered") setShowRating(true);
@@ -246,24 +197,24 @@ export const Ordermanage = () => {
             ))}
         </div>
       </div>
+
       {/* Modal Rating */}
       {showRating && selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="relative">
-            <Rating
-              onClose={() => setShowRating(false)}
-              onSubmit={() => setShowRating(false)}
-            />
-            <button
-              className="absolute top-2 right-2 text-black text-2xl font-bold"
-              onClick={() => setShowRating(false)}
-              aria-label="Close"
-            >
-              ×
-            </button>
-          </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
+          <Rating
+            onClose={() => {
+              setShowRating(false);
+              setSelectedOrder(null);
+            }}
+            onSubmit={(data) => {
+              console.log("Rating dikirim:", data);
+              setShowRating(false);
+              setSelectedOrder(null);
+            }}
+          />
         </div>
       )}
+
       <div className="mb-12"></div>
       <Footer />
     </div>
