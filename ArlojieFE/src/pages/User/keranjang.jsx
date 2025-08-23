@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Usersidebar from "../../components/usersidebar";
 import Navbar from "../../components/navbar";
 import KeranjangArlojie from "../../assets/keranjang/keranjangarlojie.svg";
 import Watch1 from "../../assets/Home/jam1.svg";
@@ -12,9 +13,11 @@ const Keranjang = () => {
       name: "Longines Master AC 6570 Silver Stainless Steel Strap",
       price: 4545000,
       quantity: 1,
-      image: Watch1, // Changed from "Watch1" to Watch1 (imported image)
+      image: Watch1,
     },
   ]);
+  // State untuk sidebar modal
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const [estimatedShipping] = useState(25000);
   const navigate = useNavigate();
@@ -45,7 +48,25 @@ const Keranjang = () => {
   const grandTotal = subtotal + estimatedShipping;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white relative">
+      {/* Sidebar Modal Overlay */}
+      {showSidebar && (
+        <div className="fixed inset-0 z-[999] flex">
+          <div
+            className="w-[350px] max-w-full h-full bg-gray-200 bg-opacity-80 backdrop-blur-lg shadow-xl p-8 flex flex-col"
+            style={{ animation: "slideInLeft 0.3s" }}
+          >
+            <Usersidebar />
+            <button
+              className="absolute top-8 right-8 text-2xl font-bold"
+              onClick={() => setShowSidebar(false)}
+            >
+              &times;
+            </button>
+          </div>
+          <div className="flex-1" onClick={() => setShowSidebar(false)} />
+        </div>
+      )}
       {/* Modal Alamat */}
       {showAlamatForm && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-40">
@@ -62,12 +83,7 @@ const Keranjang = () => {
       )}
       {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <div
-          className="bg-black"
-          data-aos="fade-down"
-          data-aos-delay="300"
-          data-aos-duration="1200"
-        >
+        <div className="bg-black">
           <Navbar />
         </div>
       </div>

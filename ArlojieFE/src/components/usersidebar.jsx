@@ -22,7 +22,7 @@ const UserSidebar = ({ onClose }) => {
         <div className="space-y-6">
           <button
             onClick={() => {
-              navigate("/home");
+              navigate("/");
               onClose();
             }}
             className="flex justify-between items-center w-full text-lg font-medium py-2"
