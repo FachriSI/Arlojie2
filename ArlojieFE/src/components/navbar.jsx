@@ -148,6 +148,7 @@ const Navbar = () => {
               onClick={toggle(setUserDropdownOpen)}
               className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300"
             >
+              {/* User Icon */}
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -162,63 +163,70 @@ const Navbar = () => {
                 />
               </svg>
             </button>
-            <div
-              className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 transform transition-all duration-300 origin-top-right ${
-                isUserDropdownOpen
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-95 pointer-events-none"
-              }`}
-            >
-              <div className="px-4 py-3 border-b border-gray-100">
-                <p className="text-sm text-gray-600">Signed in as</p>
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  john.doe@example.com
-                </p>
-              </div>
-              {/* Tambahkan tombol Order Manage */}
-              <button
-                onClick={() => {
-                  navigate("/ordermanage");
-                  setUserDropdownOpen(false);
-                }}
-                className="flex items-center w-full px-4 py-3 text-sm text-black hover:bg-gray-100"
-              >
-                <svg
-                  className="w-4 h-4 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 7h18M3 12h18M3 17h18"
-                  />
-                </svg>
-                Order Manage
-              </button>
-              {/* Tombol Logout */}
-              <button
-                onClick={handleLogout}
-                className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
-              >
-                <svg
-                  className="w-4 h-4 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-                Logout
-              </button>
-            </div>
+            {/* Dropdown user hanya muncul saat isUserDropdownOpen true */}
+            {isUserDropdownOpen && (
+              <>
+                {/* Overlay untuk close dropdown */}
+                <div
+                  className="fixed inset-0 z-[100]"
+                  onClick={close(setUserDropdownOpen)}
+                />
+                {/* Dropdown user */}
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-[200]">
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm text-gray-600">Signed in as</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      john.doe@example.com
+                    </p>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate("/ordermanage");
+                      setUserDropdownOpen(false);
+                    }}
+                    className="flex items-center w-full px-4 py-3 text-sm text-black hover:bg-gray-100 cursor-pointer"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 7h18M3 12h18M3 17h18"
+                      />
+                    </svg>
+                    Order Manage
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLogout();
+                    }}
+                    className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    Logout
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -283,13 +291,6 @@ const Navbar = () => {
       </nav>
       {/* Render UserSidebar di mobile */}
       {sidebarOpen && <UserSidebar onClose={() => setSidebarOpen(false)} />}
-      {/* Dropdown Overlay */}
-      {isUserDropdownOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={close(setUserDropdownOpen)}
-        />
-      )}
 
       {/* Mobile Search */}
       <div
@@ -315,6 +316,9 @@ const Navbar = () => {
         }`}
         onClick={toggle(setMenuOpen)}
       />
+      <div className="relative z-[200] bg-black">
+        {/* Dropdown user dan isi lainnya */}
+      </div>
     </>
   );
 };
