@@ -18,6 +18,7 @@ import Watch8 from "../../assets/Home/jam5.svg";
 
 export const Home = () => {
   const navigate = useNavigate();
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   // useEffect untuk document title
   useEffect(() => {
@@ -142,41 +143,106 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Mobile Responsive */}
-      <div className="relative min-h-screen bg-gradient-to-r from-gray-900 to-black overflow-hidden">
-        {/* Background Image - Responsive */}
-        <img
-          src={Arlojieview}
-          alt="Arlojie view"
-          className="absolute top-0 right-0 w-auto h-full object-cover object-center md:object-left opacity-80"
-        />
+      {/* ===== MOBILE SIDEBAR ===== */}
+      {showMobileSidebar && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex md:hidden transition-all duration-300">
+          <div className="bg-gray-100/60 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowMobileSidebar(false)}
+              className="absolute top-8 right-8 text-3xl font-bold"
+            >
+              &times;
+            </button>
+            {/* Logo */}
+            <div className="text-center text-4xl font-bold mb-10 tracking-wide">
+              ARLOJIE
+            </div>
+            {/* Menu */}
+            <div className="space-y-8">
+              <button
+                onClick={() => {
+                  navigate("/");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                BERANDA <span className="float-right text-2xl">&#8250;</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/wishlist");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                WISHLIST <span className="float-right text-2xl">&#8250;</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/keranjang");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                KERANJANG BELANJA{" "}
+                <span className="float-right text-2xl">&#8250;</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/ordermanage");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                RIWAYAT BELANJA{" "}
+                <span className="float-right text-2xl">&#8250;</span>
+              </button>
+            </div>
+            <hr className="my-8 border-gray-300" />
+            {/* Akun & Layanan */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-3 text-lg font-medium">
+                <span className="material-icons">person</span>
+                Akun Saya
+              </div>
+              <div className="flex items-center gap-3 text-lg font-medium">
+                <span className="material-icons">support_agent</span>
+                Layanan Costumer
+              </div>
+            </div>
+          </div>
+          {/* Klik area luar sidebar untuk close */}
+          <div className="flex-1" onClick={() => setShowMobileSidebar(false)} />
+        </div>
+      )}
+      {/* Background Image - Responsive */}
+      <img
+        src={Arlojieview}
+        alt="Arlojie view"
+        className="absolute top-0 right-0 w-auto h-full object-cover object-center md:object-left opacity-80"
+      />
 
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 md:from-black/80 via-black/70 md:via-black/50 to-black/50 md:to-transparent"></div>
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 md:from-black/80 via-black/70 md:via-black/50 to-black/50 md:to-transparent"></div>
 
-        {/* Navbar - Responsive */}
-        <div
-          className="absolute top-0 left-0 w-full z-30"
-          data-aos="fade-down"
-          data-aos-delay="300"
-          data-aos-duration="1200"
+      {/* Navbar */}
+      <div className="relative z-50 bg-black">
+        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
+      </div>
+
+      {/* Content - Mobile Responsive */}
+      <div className="relative z-10 flex flex-col justify-center md:justify-end h-screen px-6 md:px-12 max-w-full md:max-w-2xl pb-16 md:pb-32">
+        <h1
+          className="text-white text-3xl md:text-5xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide leading-tight text-center md:text-left"
+          data-aos="fade-right"
+          data-aos-delay="600"
+          data-aos-duration="800"
         >
-          <Navbar />
-        </div>
-
-        {/* Content - Mobile Responsive */}
-        <div className="relative z-10 flex flex-col justify-center md:justify-end h-screen px-6 md:px-12 max-w-full md:max-w-2xl pb-16 md:pb-32">
-          <h1
-            className="text-white text-3xl md:text-5xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide leading-tight text-center md:text-left"
-            data-aos="fade-right"
-            data-aos-delay="600"
-            data-aos-duration="800"
-          >
-            YOUR TIME
-            <br />
-            <span className="font-light tracking-wider">YOUR SIGNATURE</span>
-          </h1>
-        </div>
+          YOUR TIME
+          <br />
+          <span className="font-light tracking-wider">YOUR SIGNATURE</span>
+        </h1>
       </div>
 
       {/* Quote Section - Mobile Responsive */}

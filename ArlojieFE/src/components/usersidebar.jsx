@@ -61,6 +61,7 @@ const UserSidebar = ({ onClose }) => {
         {/* Akun & Layanan */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-lg">
+            {/* Akun Saya */}
             <svg
               className="w-6 h-6"
               fill="none"
@@ -79,21 +80,38 @@ const UserSidebar = ({ onClose }) => {
             Akun Saya
           </div>
           <div className="flex items-center gap-3 text-lg">
+            {/* Ganti ikon Layanan Costumer dengan headset */}
             <svg
               className="w-6 h-6"
               fill="none"
               stroke="currentColor"
+              strokeWidth={2}
               viewBox="0 0 24 24"
             >
               <path
-                d="M12 20v-2m0-4v-4m0-4V4m0 16a8 8 0 100-16 8 8 0 000 16z"
+                d="M4 17v-3a8 8 0 0116 0v3"
                 stroke="black"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <path
-                d="M9 16v1a3 3 0 006 0v-1"
+              <rect
+                x="2"
+                y="17"
+                width="4"
+                height="4"
+                rx="2"
+                stroke="black"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <rect
+                x="18"
+                y="17"
+                width="4"
+                height="4"
+                rx="2"
                 stroke="black"
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -102,6 +120,29 @@ const UserSidebar = ({ onClose }) => {
             </svg>
             Layanan Costumer
           </div>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/login");
+              onClose();
+            }}
+            className="flex items-center gap-3 text-lg font-medium w-full text-left"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2h-3a2 2 0 01-2-2V7a2 2 0 012-2h3a2 2 0 012 2v1"
+              />
+            </svg>
+            Logout
+          </button>
         </div>
       </div>
       {/* Klik area luar sidebar untuk close */}

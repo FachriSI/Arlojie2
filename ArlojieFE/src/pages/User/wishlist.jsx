@@ -189,7 +189,11 @@ export const Wishlist = () => {
           alt="Arlojie view"
           className="absolute top-0 right-0 w-auto h-full object-cover object-center md:object-left opacity-80"
         />
-        <div className="relative z-10 flex flex-col justify-center h-full px-4 md:px-16">
+        <div className="relative z-10 flex flex-col justify-center h-full px-4 md:px-16"
+        data-aos="fade-right"
+        data-aos-delay="300"
+        data-aos-duration="1200"
+        >
           <h1 className="text-white text-2xl md:text-4xl font-bold font-serif mb-2">
             Wishlist
           </h1>
@@ -201,7 +205,11 @@ export const Wishlist = () => {
 
       {/* ===== WISHLIST GRID ===== */}
       <div className="bg-gray-50 py-8 md:py-16 px-4 md:px-16 flex-1">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto"
+        data-aos="fade-up"
+        data-aos-delay="300"
+        data-aos-duration="1200"
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {wishlistItems.map((watch) => (
               <div
