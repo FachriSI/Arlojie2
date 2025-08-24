@@ -526,7 +526,9 @@ export const Home = () => {
                 gaya. Waktunya melangkah dengan kelas. Waktunya Arlojie.
               </p>
               <div className="text-center lg:text-left">
-                <button className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-800 transition-colors text-sm md:text-base">
+                <button className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-800 transition-colors text-sm md:text-base"
+                onClick={() => navigate("/filter")}
+                >
                   Beli Sekarang
                 </button>
               </div>
