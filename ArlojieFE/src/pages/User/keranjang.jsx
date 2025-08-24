@@ -17,7 +17,7 @@ const Keranjang = () => {
     },
   ]);
   // State untuk sidebar modal
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [setShowMobileSidebar] = useState(false);
 
   const [estimatedShipping] = useState(25000);
   const navigate = useNavigate();
@@ -49,24 +49,6 @@ const Keranjang = () => {
 
   return (
     <div className="min-h-screen bg-white relative">
-      {/* Sidebar Modal Overlay */}
-      {showSidebar && (
-        <div className="fixed inset-0 z-[999] flex">
-          <div
-            className="w-[350px] max-w-full h-full bg-gray-200 bg-opacity-80 backdrop-blur-lg shadow-xl p-8 flex flex-col"
-            style={{ animation: "slideInLeft 0.3s" }}
-          >
-            <Usersidebar />
-            <button
-              className="absolute top-8 right-8 text-2xl font-bold"
-              onClick={() => setShowSidebar(false)}
-            >
-              &times;
-            </button>
-          </div>
-          <div className="flex-1" onClick={() => setShowSidebar(false)} />
-        </div>
-      )}
       {/* Modal Alamat */}
       {showAlamatForm && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-40">
@@ -83,9 +65,7 @@ const Keranjang = () => {
       )}
       {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <div className="bg-black">
-          <Navbar />
-        </div>
+        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
       </div>
       {/* Hero Section */}
       <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">

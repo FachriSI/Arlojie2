@@ -18,7 +18,7 @@ import Watch8 from "../../assets/Home/jam5.svg";
 
 export const Home = () => {
   const navigate = useNavigate();
-  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [setShowMobileSidebar] = useState(false);
 
   // useEffect untuk document title
   useEffect(() => {
@@ -143,79 +143,6 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* ===== MOBILE SIDEBAR ===== */}
-      {showMobileSidebar && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex md:hidden transition-all duration-300">
-          <div className="bg-gray-100/60 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowMobileSidebar(false)}
-              className="absolute top-8 right-8 text-3xl font-bold"
-            >
-              &times;
-            </button>
-            {/* Logo */}
-            <div className="text-center text-4xl font-bold mb-10 tracking-wide">
-              ARLOJIE
-            </div>
-            {/* Menu */}
-            <div className="space-y-8">
-              <button
-                onClick={() => {
-                  navigate("/");
-                  setShowMobileSidebar(false);
-                }}
-                className="w-full text-left text-lg font-bold py-2"
-              >
-                BERANDA <span className="float-right text-2xl">&#8250;</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/wishlist");
-                  setShowMobileSidebar(false);
-                }}
-                className="w-full text-left text-lg font-bold py-2"
-              >
-                WISHLIST <span className="float-right text-2xl">&#8250;</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/keranjang");
-                  setShowMobileSidebar(false);
-                }}
-                className="w-full text-left text-lg font-bold py-2"
-              >
-                KERANJANG BELANJA{" "}
-                <span className="float-right text-2xl">&#8250;</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/ordermanage");
-                  setShowMobileSidebar(false);
-                }}
-                className="w-full text-left text-lg font-bold py-2"
-              >
-                RIWAYAT BELANJA{" "}
-                <span className="float-right text-2xl">&#8250;</span>
-              </button>
-            </div>
-            <hr className="my-8 border-gray-300" />
-            {/* Akun & Layanan */}
-            <div className="space-y-8">
-              <div className="flex items-center gap-3 text-lg font-medium">
-                <span className="material-icons">person</span>
-                Akun Saya
-              </div>
-              <div className="flex items-center gap-3 text-lg font-medium">
-                <span className="material-icons">support_agent</span>
-                Layanan Costumer
-              </div>
-            </div>
-          </div>
-          {/* Klik area luar sidebar untuk close */}
-          <div className="flex-1" onClick={() => setShowMobileSidebar(false)} />
-        </div>
-      )}
       {/* Background Image - Responsive */}
       <img
         src={Arlojieview}
@@ -526,8 +453,9 @@ export const Home = () => {
                 gaya. Waktunya melangkah dengan kelas. Waktunya Arlojie.
               </p>
               <div className="text-center lg:text-left">
-                <button className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-800 transition-colors text-sm md:text-base"
-                onClick={() => navigate("/filter")}
+                <button
+                  className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-800 transition-colors text-sm md:text-base"
+                  onClick={() => navigate("/filter")}
                 >
                   Beli Sekarang
                 </button>

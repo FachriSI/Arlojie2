@@ -14,7 +14,8 @@ export const Checkout = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const navigate = useNavigate(); // Tambahkan ini
+  const [setShowMobileSidebar] = useState(false);
+  const navigate = useNavigate();
 
   // State untuk kuantitas dan harga
   const [quantity, setQuantity] = useState(2);
@@ -51,16 +52,9 @@ export const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/*Navbar */}
+      {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <div
-          className="bg-black"
-          data-aos="fade-down"
-          data-aos-delay="300"
-          data-aos-duration="1200"
-        >
-          <Navbar />
-        </div>
+        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
       </div>
 
       {/*Hero Section*/}

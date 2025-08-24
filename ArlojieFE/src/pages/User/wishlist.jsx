@@ -85,7 +85,7 @@ export const Wishlist = () => {
   const [wishlistState, setWishlistState] = useState(
     new Set(wishlistData.map((item) => item.id))
   );
-  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [setShowMobileSidebar] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,85 +103,10 @@ export const Wishlist = () => {
 
   return (
     <div className="min-h-screen bg-black relative">
-      {/* ===== MOBILE SIDEBAR ===== */}
-      {showMobileSidebar && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex md:hidden transition-all duration-300">
-          <div className="bg-gray-100/60 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowMobileSidebar(false)}
-              className="absolute top-8 right-8 text-3xl font-bold"
-            >
-              &times;
-            </button>
-            {/* Logo */}
-            <div className="text-center text-4xl font-bold mb-10 tracking-wide">
-              ARLOJIE
-            </div>
-            {/* Menu */}
-            <div className="space-y-6">
-              <button
-                onClick={() => {
-                  navigate("/");
-                  setShowMobileSidebar(false);
-                }}
-                className="flex justify-between items-center w-full text-lg font-medium py-2"
-              >
-                BERANDA <span>&#8250;</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/wishlist");
-                  setShowMobileSidebar(false);
-                }}
-                className="flex justify-between items-center w-full text-lg font-medium py-2"
-              >
-                WISHLIST <span>&#8250;</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/keranjang");
-                  setShowMobileSidebar(false);
-                }}
-                className="flex justify-between items-center w-full text-lg font-medium py-2"
-              >
-                KERANJANG BELANJA <span>&#8250;</span>
-              </button>
-              <button
-                onClick={() => {
-                  navigate("/ordermanage");
-                  setShowMobileSidebar(false);
-                }}
-                className="flex justify-between items-center w-full text-lg font-medium py-2"
-              >
-                RIWAYAT BELANJA <span>&#8250;</span>
-              </button>
-            </div>
-            <hr className="my-8" />
-            {/* Akun & Layanan */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 text-lg">
-                {/* Akun Icon */}
-                <span className="material-icons">person</span>
-                Akun Saya
-              </div>
-              <div className="flex items-center gap-3 text-lg">
-                {/* Layanan Icon */}
-                <span className="material-icons">support_agent</span>
-                Layanan Costumer
-              </div>
-            </div>
-          </div>
-          {/* Klik area luar sidebar untuk close */}
-          <div className="flex-1" onClick={() => setShowMobileSidebar(false)} />
-        </div>
-      )}
-
-      {/* ===== NAVBAR ===== */}
-      <div className="relative z-[100] bg-black">
-        <Navbar />
+      {/* Navbar */}
+      <div className="relative z-50 bg-black">
+        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
       </div>
-
       {/* ===== HERO SECTION ===== */}
       <div className="relative h-40 md:h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
         <img
@@ -189,10 +114,11 @@ export const Wishlist = () => {
           alt="Arlojie view"
           className="absolute top-0 right-0 w-auto h-full object-cover object-center md:object-left opacity-80"
         />
-        <div className="relative z-10 flex flex-col justify-center h-full px-4 md:px-16"
-        data-aos="fade-right"
-        data-aos-delay="300"
-        data-aos-duration="1200"
+        <div
+          className="relative z-10 flex flex-col justify-center h-full px-4 md:px-16"
+          data-aos="fade-right"
+          data-aos-delay="300"
+          data-aos-duration="1200"
         >
           <h1 className="text-white text-2xl md:text-4xl font-bold font-serif mb-2">
             Wishlist
@@ -205,10 +131,11 @@ export const Wishlist = () => {
 
       {/* ===== WISHLIST GRID ===== */}
       <div className="bg-gray-50 py-8 md:py-16 px-4 md:px-16 flex-1">
-        <div className="max-w-7xl mx-auto"
-        data-aos="fade-up"
-        data-aos-delay="300"
-        data-aos-duration="1200"
+        <div
+          className="max-w-7xl mx-auto"
+          data-aos="fade-up"
+          data-aos-delay="300"
+          data-aos-duration="1200"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {wishlistItems.map((watch) => (

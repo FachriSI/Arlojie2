@@ -14,6 +14,7 @@ export const Ordermanage = () => {
   const [filter, setFilter] = useState("All");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showRating, setShowRating] = useState(false);
+  const [setShowMobileSidebar] = useState(false);
 
   const orders = [
     {
@@ -66,8 +67,8 @@ export const Ordermanage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Navbar */}
-      <div className="fixed top-0 left-0 w-full z-[100] bg-black">
-        <Navbar />
+      <div className="relative z-50 bg-black">
+        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
       </div>
 
       <div className="pt-16">
@@ -78,10 +79,11 @@ export const Ordermanage = () => {
             alt="Arlojie Order"
             className="absolute inset-0 w-full h-full object-cover opacity-80"
           />
-          <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16"
-          data-aos="fade-right"
-          data-aos-delay="300"
-          data-aos-duration="1200"
+          <div
+            className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16"
+            data-aos="fade-right"
+            data-aos-delay="300"
+            data-aos-duration="1200"
           >
             <h1 className="text-white text-3xl md:text-4xl font-bold font-serif mb-2">
               Order Manage
@@ -92,10 +94,11 @@ export const Ordermanage = () => {
           </div>
         </div>
         {/* Filter Riwayat Pemesanan */}
-        <div className="max-w-7xl mx-auto px-2 md:px-4 mt-6 md:mt-10"
-        data-aos="fade-up"
-        data-aos-delay="300"
-        data-aos-duration="1200"
+        <div
+          className="max-w-7xl mx-auto px-2 md:px-4 mt-6 md:mt-10"
+          data-aos="fade-up"
+          data-aos-delay="300"
+          data-aos-duration="1200"
         >
           <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">
             Riwayat Pemesanan
