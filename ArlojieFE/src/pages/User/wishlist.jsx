@@ -268,10 +268,16 @@ export const Wishlist = () => {
                     </span>
                   </div>
                   <button
-                    className="px-4 md:px-6 py-2 border text-black border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
+                    className="w-full py-3  border text-black border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
                     onClick={() => navigate("/view")}
                   >
                     Quick View
+                  </button>
+                  <button
+                    className="w-full py-3  border text-white border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-black opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 mt-8"
+                    onClick={() => navigate("/checkout")}
+                  >
+                    Checkout
                   </button>
                 </div>
               </div>

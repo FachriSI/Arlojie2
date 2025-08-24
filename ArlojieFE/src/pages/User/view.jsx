@@ -20,6 +20,7 @@ export const View = () => {
   const images = [Watch1, Watch2, Watch3];
   const [mainImage, setMainImage] = useState(images[0]);
   const [quantity, setQuantity] = useState(1);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const navigate = useNavigate();
 
   // Tambahkan state dan fungsi wishlist
@@ -48,16 +49,83 @@ export const View = () => {
           type="success"
         />
       )}
+      {/* ===== MOBILE SIDEBAR ===== */}
+      {showMobileSidebar && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex md:hidden transition-all duration-300">
+          <div className="bg-gray-100/60 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowMobileSidebar(false)}
+              className="absolute top-8 right-8 text-3xl font-bold"
+            >
+              &times;
+            </button>
+            {/* Logo */}
+            <div className="text-center text-4xl font-bold mb-10 tracking-wide">
+              ARLOJIE
+            </div>
+            {/* Menu */}
+            <div className="space-y-8">
+              <button
+                onClick={() => {
+                  navigate("/");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                BERANDA <span className="float-right text-2xl">&#8250;</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/wishlist");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                WISHLIST <span className="float-right text-2xl">&#8250;</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/keranjang");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                KERANJANG BELANJA{" "}
+                <span className="float-right text-2xl">&#8250;</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate("/ordermanage");
+                  setShowMobileSidebar(false);
+                }}
+                className="w-full text-left text-lg font-bold py-2"
+              >
+                RIWAYAT BELANJA{" "}
+                <span className="float-right text-2xl">&#8250;</span>
+              </button>
+            </div>
+            <hr className="my-8 border-gray-300" />
+            {/* Akun & Layanan */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-3 text-lg font-medium">
+                <span className="material-icons">person</span>
+                Akun Saya
+              </div>
+              <div className="flex items-center gap-3 text-lg font-medium">
+                <span className="material-icons">support_agent</span>
+                Layanan Costumer
+              </div>
+            </div>
+          </div>
+          {/* Klik area luar sidebar untuk close */}
+          <div className="flex-1" onClick={() => setShowMobileSidebar(false)} />
+        </div>
+      )}
+
       {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <div
-          className="bg-black"
-          data-aos="fade-down"
-          data-aos-delay="300"
-          data-aos-duration="1200"
-        >
-          <Navbar />
-        </div>
+        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
       </div>
 
       {/* Breadcrumb */}
@@ -265,10 +333,16 @@ export const View = () => {
                   </div>
                 </div>
                 <button
-                  className="w-full border border-black rounded-full py-2 text-sm hover:bg-black hover:text-white transition-colors"
+                  className="w-full border border-black rounded-full py-2 text-sm hover:bg-black hover:text-white transition-colors mb-2"
                   onClick={() => navigate("/view")}
                 >
                   Quick View
+                </button>
+                <button
+                  className="w-full border border-black rounded-full py-2 text-sm bg-black text-white hover:bg-gray-900 transition-colors"
+                  onClick={() => navigate("/checkout")}
+                >
+                  Checkout
                 </button>
               </div>
             ))}
