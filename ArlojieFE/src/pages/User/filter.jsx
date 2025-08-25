@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import ArlojieFilter from "../../assets/filter/arlojiefilter.svg";
+import Footer from "../../components/footer";
 import { useNavigate } from "react-router-dom";
 const Filter = () => {
   useEffect(() => {
@@ -136,17 +137,27 @@ const Filter = () => {
           alt="Arlojie view"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="relative z-10 flex items-center h-full px-6">
+        <div
+          className="relative z-10 flex items-center h-full px-6"
+          data-aos="fade-right"
+          data-aos-delay="300"
+          data-aos-duration="1200"
+        >
           <h1 className="text-white text-3xl font-sans font-bold mb-4">
             Jam Tangan Terbaik Hanya Untukmu
           </h1>
         </div>
       </div>
 
-      <div className="flex gap-6 p-6 bg-white">
+      <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-6 bg-white">
         {/* Sidebar Filter */}
-        <div className="w-80 flex-shrink-0">
-          <div className="bg-white p-6 sticky top-6">
+        <div
+          className="w-full lg:w-80 flex-shrink-0 mb-6 lg:mb-0"
+          data-aos="fade-up"
+          data-aos-delay="300"
+          data-aos-duration="1200"
+        >
+          <div className="bg-white p-4 md:p-6 sticky top-6 rounded-lg shadow-sm overflow-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
@@ -286,7 +297,12 @@ const Filter = () => {
 
         {/* Products Grid */}
         <div className="flex-1">
-          <div className="grid grid-cols-4 gap-6 cursor-pointer">
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 cursor-pointer"
+            data-aos="fade-up"
+            data-aos-delay="300"
+            data-aos-duration="1200"
+          >
             {Array.from({ length: 20 }, (_, index) => (
               <div
                 key={index}
@@ -364,15 +380,9 @@ const Filter = () => {
               </div>
             ))}
           </div>
-
-          {/* Load More Button */}
-          <div className="text-center mt-8">
-            <button className="bg-white border border-gray-300 px-6 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-              Lihat Hasil Lainnya
-            </button>
-          </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
