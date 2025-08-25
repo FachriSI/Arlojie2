@@ -6,6 +6,7 @@ import Watch1 from "../../assets/Home/jam1.svg";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import Alamat from "../../components/alamat";
+
 const Keranjang = () => {
   const [cartItems, setCartItems] = useState([
     {
@@ -14,17 +15,40 @@ const Keranjang = () => {
       price: 4545000,
       quantity: 1,
       image: Watch1,
+      description: "Stainless Steel Strap", // Tambahkan deskripsi agar tidak error
     },
   ]);
-  // State untuk sidebar modal
-  const [setShowMobileSidebar] = useState(false);
-
+  const [showSidebar, setShowSidebar] = useState(false);
   const [estimatedShipping] = useState(25000);
   const navigate = useNavigate();
   const [showAlamatForm, setShowAlamatForm] = useState(false);
+  
+  // State untuk userData dan handleLogout
+  const [userData, setUserData] = useState(null);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userId");
+    setUserData({ isLoggedIn: false });
+    navigate("/login");
+  };
 
   useEffect(() => {
     document.title = "Arlojie | Keranjang";
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setUserData({
+        isLoggedIn: true,
+        name: localStorage.getItem("userName"),
+        email: localStorage.getItem("userEmail"),
+        role: localStorage.getItem("role"),
+        // ...
+      });
+    } else {
+      setUserData({ isLoggedIn: false });
+    }
   }, []);
 
   const updateQuantity = (id, change) => {
@@ -47,34 +71,51 @@ const Keranjang = () => {
   );
   const grandTotal = subtotal + estimatedShipping;
 
+  const handleAlamatSubmit = (data) => {
+    setShowAlamatForm(false);
+    navigate("/checkout", { state: { alamat: data, cartItems: cartItems, grandTotal: grandTotal } });
+  };
+
   return (
     <div className="min-h-screen bg-white relative">
-      {/* Modal Alamat */}
+      {showSidebar && (
+        <div className="fixed inset-0 z-[999] flex">
+          <div
+            className="w-[350px] max-w-full h-full bg-gray-200 bg-opacity-80 backdrop-blur-lg shadow-xl p-8 flex flex-col"
+            style={{ animation: "slideInLeft 0.3s" }}
+          >
+            <Usersidebar userData={userData} handleLogout={handleLogout} onClose={() => setShowSidebar(false)} />
+            <button
+              className="absolute top-8 right-8 text-2xl font-bold"
+              onClick={() => setShowSidebar(false)}
+            >
+              &times;
+            </button>
+          </div>
+          <div className="flex-1" onClick={() => setShowSidebar(false)} />
+        </div>
+      )}
       {showAlamatForm && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black bg-opacity-40">
           <div className="relative">
             <Alamat
-              onSubmit={() => {
-                setShowAlamatForm(false);
-                navigate("/checkout");
-              }}
+              onSubmit={handleAlamatSubmit}
               onCancel={() => setShowAlamatForm(false)}
             />
           </div>
         </div>
       )}
-      {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
+        <div className="bg-black">
+          <Navbar userData={userData} handleLogout={handleLogout} />
+        </div>
       </div>
-      {/* Hero Section */}
       <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
         <img
           src={KeranjangArlojie}
           alt="Arlojie Keranjang"
           className="absolute inset-0 bg-cover bg-center h-64 w-full object-cover opacity-50"
         />
-        {/* Content */}
         <div
           className="relative z-10 flex flex-col h-full px-6 justify-center"
           data-aos="fade-right"
@@ -89,10 +130,8 @@ const Keranjang = () => {
           </p>
         </div>
       </div>
-      {/* Cart Content */}
       <div className="max-w-6xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          {/* Table Header */}
           <div className="bg-gray-50 px-6 py-4 border-b">
             <div className="grid grid-cols-12 gap-4 text-sm font-semibold text-gray-700">
               <div className="col-span-5">Produk</div>
@@ -102,12 +141,10 @@ const Keranjang = () => {
               <div className="col-span-1 text-center">Aksi</div>
             </div>
           </div>
-          {/* Cart Items */}
           <div className="divide-y bg-white">
             {cartItems.map((item) => (
               <div key={item.id} className="px-6 py-6">
                 <div className="grid grid-cols-12 gap-4 items-center">
-                  {/* Product Info */}
                   <div className="col-span-5 flex items-center space-x-4">
                     <img
                       src={item.image}
@@ -118,13 +155,11 @@ const Keranjang = () => {
                       <h3 className="font-medium text-gray-900">{item.name}</h3>
                     </div>
                   </div>
-                  {/* Price */}
                   <div className="col-span-2 text-center">
                     <span className="text-gray-900 font-medium">
                       Rp{item.price.toLocaleString("id-ID")}
                     </span>
                   </div>
-                  {/* Quantity */}
                   <div className="col-span-2 flex justify-center">
                     <div className="flex items-center border border-gray-300 rounded-lg">
                       <button
@@ -144,13 +179,11 @@ const Keranjang = () => {
                       </button>
                     </div>
                   </div>
-                  {/* Total Price */}
                   <div className="col-span-2 text-center">
                     <span className="text-gray-900 font-medium">
                       Rp{(item.price * item.quantity).toLocaleString("id-ID")}
                     </span>
                   </div>
-                  {/* Actions */}
                   <div className="col-span-1 text-center">
                     <button
                       onClick={() => removeItem(item.id)}
@@ -175,21 +208,17 @@ const Keranjang = () => {
               </div>
             ))}
           </div>
-          {/* Cart Summary */}
           <div className="bg-gray-50 px-6 py-6 border-t">
             <div className="flex justify-end">
               <div className="w-80 space-y-4">
-                {/* Subtotal */}
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal:</span>
                   <span>Rp{subtotal.toLocaleString("id-ID")}</span>
                 </div>
-                {/* Shipping */}
                 <div className="flex justify-between text-gray-700">
                   <span>Estimasi Ongkir:</span>
                   <span>Rp{estimatedShipping.toLocaleString("id-ID")}</span>
                 </div>
-                {/* Grand Total */}
                 <div className="flex justify-between items-center pt-4 border-t border-gray-300">
                   <span className="text-lg font-semibold text-gray-900">
                     Grand Total
@@ -198,7 +227,6 @@ const Keranjang = () => {
                     Rp{grandTotal.toLocaleString("id-ID")}
                   </span>
                 </div>
-                {/* Checkout Button */}
                 <button
                   className="w-full bg-black text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors"
                   onClick={() => setShowAlamatForm(true)}

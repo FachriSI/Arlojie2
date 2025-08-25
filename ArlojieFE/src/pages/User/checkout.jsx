@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Tambahkan ini
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios untuk panggilan API
 import Navbar from "../../components/navbar";
 import TermsModal from "../../components/termsmodal";
 import Footer from "../../components/footer";
@@ -10,51 +11,197 @@ import Mandiri from "../../assets/checkout/mandiri.webp";
 import Gopay from "../../assets/checkout/gopay.png";
 import OVO from "../../assets/checkout/ovo.png";
 import DANA from "../../assets/checkout/dana.png";
-export const Checkout = () => {
-  const [showTerms, setShowTerms] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [setShowMobileSidebar] = useState(false);
-  const navigate = useNavigate();
 
-  // State untuk kuantitas dan harga
-  const [quantity, setQuantity] = useState(2);
-  const price = 4545000;
+export const Checkout = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { alamat, cartItems, grandTotal: totalFromCart } = location.state || {};
+
+  const [showTerms, setShowTerms] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+  const [totalHarga, setTotalHarga] = useState(0);
+  const [selectedShipping, setSelectedShipping] = useState(10000);
+
   const shippingOptions = [
     { label: "JNE", value: 10000 },
     { label: "TIKI", value: 12000 },
     { label: "SiCepat", value: 8000 },
   ];
-  const [selectedShipping, setSelectedShipping] = useState(
-    shippingOptions[0].value
-  );
-
-  // Handler untuk hapus produk
-  const handleDelete = () => {
-    setIsDeleted(true);
-  };
-
-  // Hitung total harga produk dan grand total
-  const totalHarga = isDeleted ? 0 : price * quantity;
-  const grandTotal = totalHarga + selectedShipping;
 
   useEffect(() => {
     document.title = "Arlojie | Checkout";
-  }, []);
+    if (!alamat || !cartItems || !totalFromCart) {
+      navigate("/keranjang", { replace: true });
+    }
+  }, [alamat, cartItems, totalFromCart, navigate]);
 
-  // Handler untuk tambah/kurang kuantitas
-  const handleDecrease = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
-  };
-  const handleIncrease = () => {
-    setQuantity(quantity + 1);
+  useEffect(() => {
+    if (cartItems) {
+      const subtotal = cartItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      setTotalHarga(subtotal + selectedShipping);
+    }
+  }, [cartItems, selectedShipping]);
+
+  useEffect(() => {
+    if (alert.show) {
+      const timer = setTimeout(() => {
+        setAlert({ show: false, type: "", message: "" });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert.show]);
+
+  const showAlert = (type, message) => setAlert({ show: true, type, message });
+
+  const handleCreateOrder = async () => {
+    if (!isAgreed) {
+      showAlert("error", "Anda harus menyetujui Syarat dan Ketentuan.");
+      return;
+    }
+    if (!paymentMethod) {
+      showAlert("error", "Anda harus memilih Metode Pembayaran.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      if (!token || !userId) {
+        showAlert("error", "Anda harus login untuk membuat pesanan.");
+        navigate("/login");
+        return;
+      }
+
+      const orderData = {
+        userId,
+        alamat,
+        items: cartItems.map(item => ({
+          product_id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        totalHarga,
+        ongkir: selectedShipping,
+        metodePembayaran: paymentMethod,
+      };
+
+      if (!cartItems || cartItems.length === 0) {
+        showAlert("error", "Keranjang belanja Anda kosong.");
+        return;
+      }
+
+      await axios.post("http://localhost:3000/api/orders", orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      showAlert("success", "Pesanan berhasil dibuat!");
+      localStorage.removeItem("cartItems");
+
+      setTimeout(() => {
+        navigate("/ordermanage");
+      }, 2000);
+
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.message || "Terjadi kesalahan saat membuat pesanan.";
+      console.error("Gagal membuat pesanan:", errorMessage);
+      showAlert("error", `Gagal membuat pesanan: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navbar */}
+      {/* Alert Component */}
+      <div
+        className={`fixed top-4 md:top-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-500 ease-out px-4 ${
+          alert.show
+            ? "translate-y-0 opacity-100 scale-100"
+            : "-translate-y-full opacity-0 scale-95"
+        }`}
+      >
+        <div
+          className={`px-4 md:px-6 py-3 md:py-4 rounded-xl md:rounded-2xl shadow-2xl backdrop-blur-md border flex items-center space-x-3 min-w-[280px] md:min-w-[360px] transition-all duration-300 ${
+            alert.type === "success"
+              ? "bg-white/95 border-gray-200 text-gray-800"
+              : "bg-black/95 border-gray-700 text-white"
+          }`}
+        >
+          <div
+            className={`flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center ${
+              alert.type === "success" ? "bg-black" : "bg-white"
+            }`}
+          >
+            <svg
+              className={`w-3 h-3 md:w-4 md:h-4 ${
+                alert.type === "success" ? "text-white" : "text-black"
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={
+                  alert.type === "success"
+                    ? "M5 13l4 4L19 7"
+                    : "M6 18L18 6M6 6l12 12"
+                }
+              />
+            </svg>
+          </div>
+          <p className="font-medium text-xs md:text-sm flex-1">
+            {alert.message}
+          </p>
+          <button
+            onClick={() => setAlert({ show: false, type: "", message: "" })}
+            className={`flex-shrink-0 ml-2 md:ml-4 transition-all duration-200 hover:scale-110 ${
+              alert.type === "success"
+                ? "text-gray-400 hover:text-gray-600"
+                : "text-gray-400 hover:text-gray-200"
+            }`}
+          >
+            <svg
+              className="w-3 h-3 md:w-4 md:h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      {/*Navbar */}
       <div className="relative z-50 bg-black">
-        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
+        <div
+          className="bg-black"
+          data-aos="fade-down"
+          data-aos-delay="300"
+          data-aos-duration="1200"
+        >
+          <Navbar />
+        </div>
       </div>
 
       {/*Hero Section*/}
@@ -108,17 +255,21 @@ export const Checkout = () => {
             <h2 className="text-lg font-semibold text-black mb-2">
               Proses Pengiriman
             </h2>
-            <div className="flex flex-col md:flex-row md:items-center md:gap-8">
-              <div className="font-semibold text-black mb-1 md:mb-0">
-                Akmal <br />
-                <span className="font-normal text-black/80">082976395395</span>
+            {/* Tampilkan data alamat dari useLocation */}
+            {alamat ? (
+              <div className="flex flex-col md:flex-row md:items-center md:gap-8">
+                <div className="font-semibold text-black mb-1 md:mb-0">
+                  {alamat.namaLengkap} <br />
+                  <span className="font-normal text-black/80">{alamat.nomorTelepon}</span>
+                </div>
+                <div className="text-black/90 md:border-l md:pl-8 md:ml-8">
+                  {`${alamat.alamatLengkap}, Kel. ${alamat.kelurahan}, Kec. ${alamat.kecamatan}, Kota ${alamat.kota}, ${alamat.provinsi}`}
+                  {alamat.detailLainnya && <>, ({alamat.detailLainnya})</>}
+                </div>
               </div>
-              <div className="text-black/90 md:border-l md:pl-8 md:ml-8">
-                Jln. Raya Kampung Baru, Kelurahan Kampung Baru, Lubuk Kilangan,
-                (disamping kedai ibuk) <br />
-                KOTA PADANG, ID 20224
-              </div>
-            </div>
+            ) : (
+              <p>Memuat alamat pengiriman...</p>
+            )}
           </div>
         </div>
       </div>
@@ -144,64 +295,39 @@ export const Checkout = () => {
             <div className="col-span-1"></div>
           </div>
           {/* Produk */}
-          {!isDeleted && (
-            <div className="grid grid-cols-12 gap-4 items-center border-b pb-6">
-              <div className="col-span-5 flex items-center gap-4">
-                <img
-                  src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=facearea&w=96&q=80"
-                  alt="Longines Master AC 6570 Silver Stainless Steel Strap"
-                  className="w-20 h-20 object-cover rounded-lg"
-                />
-                <span className="font-medium text-black">
-                  Longines Master AC 6570 Silver
-                  <br />
-                  Stainless Steel Strap
-                </span>
-              </div>
-              <div className="col-span-2 text-center font-medium text-black">
-                Rp{price.toLocaleString("id-ID")}
-              </div>
-              <div className="col-span-2 flex justify-center">
-                <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
-                  <button
-                    className="px-4 py-2 text-black text-xl"
-                    onClick={handleDecrease}
-                    disabled={quantity <= 1}
-                  >
-                    −
-                  </button>
-                  <span className="px-6 py-2 text-xl font-semibold">
-                    {quantity}
+          {cartItems && cartItems.length > 0 ? (
+            cartItems.map(item => (
+              <div key={item.id} className="grid grid-cols-12 gap-4 items-center border-b pb-6">
+                <div className="col-span-5 flex items-center gap-4">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <span className="font-medium text-black">
+                    {item.name}
+                    <br />
+                    {item.description}
                   </span>
-                  <button
-                    className="px-4 py-2 text-black text-xl"
-                    onClick={handleIncrease}
-                  >
-                    +
-                  </button>
+                </div>
+                <div className="col-span-2 text-center font-medium text-black">
+                  Rp{item.price.toLocaleString("id-ID")}
+                </div>
+                <div className="col-span-2 flex justify-center">
+                  <span className="px-6 py-2 text-xl font-semibold">
+                    {item.quantity}
+                  </span>
+                </div>
+                <div className="col-span-2 text-center font-semibold text-black text-lg">
+                  Rp{(item.price * item.quantity).toLocaleString("id-ID")}
+                </div>
+                <div className="col-span-1 text-center">
+                  {/* Tombol hapus tidak perlu di checkout */}
                 </div>
               </div>
-              <div className="col-span-2 text-center font-semibold text-black text-lg">
-                Rp{totalHarga.toLocaleString("id-ID")}
-              </div>
-              <div className="col-span-1 text-center">
-                <button onClick={handleDelete}>
-                  <svg
-                    className="w-6 h-6 text-red-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
+            ))
+          ) : (
+            <p className="text-center py-4">Tidak ada produk dalam pesanan.</p>
           )}
           {/* Opsi Pengiriman */}
           <div className="border-b pt-6 pb-6">
@@ -233,7 +359,7 @@ export const Checkout = () => {
               Grand Total
             </span>
             <span className="text-2xl font-bold text-black">
-              Rp{grandTotal.toLocaleString("id-ID")}
+              Rp{totalHarga.toLocaleString("id-ID")}
             </span>
           </div>
         </div>
@@ -386,20 +512,20 @@ export const Checkout = () => {
             <div className="font-semibold mb-2">Review Pemesanan</div>
             <div className="space-y-1">
               <div>
-                <span className="font-semibold">Produk:</span> Longines Master (
-                {quantity} )
+                <span className="font-semibold">Produk:</span>{" "}
+                {cartItems?.map(item => `${item.name} (${item.quantity})`).join(', ') || 'Tidak ada produk'}
               </div>
               <div>
-                <span className="font-semibold">Alamat:</span> Jln. Raya Kampung
-                Baru, Kelurahan Kampung Baru, Lubuk Kilangan, (disamping kedai
-                ibuk) KOTA PADANG, ID 20224
+                <span className="font-semibold">Alamat:</span>{" "}
+                {alamat ? (
+                  `${alamat.alamatLengkap}, Kel. ${alamat.kelurahan}, Kec. ${alamat.kecamatan}, Kota ${alamat.kota}, ${alamat.provinsi}`
+                ) : (
+                  "Alamat belum diisi."
+                )}
               </div>
               <div>
                 <span className="font-semibold">Ekspedisi:</span>{" "}
-                {
-                  shippingOptions.find((opt) => opt.value === selectedShipping)
-                    ?.label
-                }
+                {shippingOptions.find((opt) => opt.value === selectedShipping)?.label}
               </div>
               <div>
                 <span className="font-semibold">Pembayaran:</span>{" "}
@@ -423,6 +549,8 @@ export const Checkout = () => {
               <input
                 type="checkbox"
                 className="accent-black w-5 h-5 cursor-pointer"
+                checked={isAgreed}
+                onChange={(e) => setIsAgreed(e.target.checked)}
               />
               <span>
                 Saya setuju dengan{" "}
@@ -436,10 +564,15 @@ export const Checkout = () => {
               </span>
             </label>
             <button
-              className="bg-black text-white px-12 py-3 rounded-2xl font-medium text-lg hover:bg-gray-900 transition-colors"
-              onClick={() => navigate("/ordermanage")} // Tambahkan ini
+              className={`bg-black text-white px-12 py-3 rounded-2xl font-medium text-lg transition-colors ${
+                isLoading || !isAgreed || !paymentMethod
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-900"
+              }`}
+              onClick={handleCreateOrder}
+              disabled={isLoading || !isAgreed || !paymentMethod}
             >
-              Buat Pesanan
+              {isLoading ? "Membuat Pesanan..." : "Buat Pesanan"}
             </button>
           </div>
         </div>

@@ -20,7 +20,6 @@ export const View = () => {
   const images = [Watch1, Watch2, Watch3];
   const [mainImage, setMainImage] = useState(images[0]);
   const [quantity, setQuantity] = useState(1);
-  const [setShowMobileSidebar] = useState(false);
   const navigate = useNavigate();
 
   // Tambahkan state dan fungsi wishlist
@@ -49,10 +48,16 @@ export const View = () => {
           type="success"
         />
       )}
-
       {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
+        <div
+          className="bg-black"
+          data-aos="fade-down"
+          data-aos-delay="300"
+          data-aos-duration="1200"
+        >
+          <Navbar />
+        </div>
       </div>
 
       {/* Breadcrumb */}
@@ -260,16 +265,10 @@ export const View = () => {
                   </div>
                 </div>
                 <button
-                  className="w-full border border-black rounded-full py-2 text-sm hover:bg-black hover:text-white transition-colors mb-2"
+                  className="w-full border border-black rounded-full py-2 text-sm hover:bg-black hover:text-white transition-colors"
                   onClick={() => navigate("/view")}
                 >
                   Quick View
-                </button>
-                <button
-                  className="w-full border border-black rounded-full py-2 text-sm bg-black text-white hover:bg-gray-900 transition-colors"
-                  onClick={() => navigate("/checkout")}
-                >
-                  Checkout
                 </button>
               </div>
             ))}

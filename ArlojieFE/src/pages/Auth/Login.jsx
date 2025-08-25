@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,9 +13,13 @@ const Login = () => {
 
   useEffect(() => {
     document.title = "Arlojie | Login";
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRemember(true);
+    }
   }, []);
 
-  // Auto hide alert after 3 seconds
   useEffect(() => {
     if (alert.show) {
       const timer = setTimeout(() => {
@@ -28,27 +33,56 @@ const Login = () => {
     setAlert({ show: true, type, message });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setAlert({ show: false, type: "", message: "" });
 
-    // Validate form
     if (!email || !password) {
       showAlert("error", "Email dan password harus diisi!");
       setIsLoading(false);
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      showAlert("success", "Login berhasil! Anda akan diarahkan ke dashboard.");
-      setIsLoading(false);
+    try {
+      const response = await axios.post("http://localhost:3000/api/auth/login", {
+        email,
+        password,
+      });
 
-      // Navigate to dashboard after 2 seconds
+      const { token, role, message, name, userId } = response.data; 
+
+      // Simpan semua data di localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("userName", name);
+      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userId", userId); 
+
+      // Logika "Ingat saya"
+      if (remember) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
+      showAlert("success", message);
+
+      // Logika pengalihan berdasarkan role pengguna
       setTimeout(() => {
-        navigate("/home");
+        if (role === 'admin') {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/home");
+        }
       }, 2000);
-    }, 1500);
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
+      showAlert("error", errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
