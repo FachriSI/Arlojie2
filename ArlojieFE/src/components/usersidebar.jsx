@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 const UserSidebar = ({ onClose }) => {
   const navigate = useNavigate();
+  // Data dummy user
+  const user = { name: "Budi Santoso", email: "budi@email.com" };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-100 flex">
@@ -18,11 +20,31 @@ const UserSidebar = ({ onClose }) => {
         <div className="text-center text-4xl font-bold mb-10 tracking-wide">
           ARLOJIE
         </div>
+        {/* Welcome User */}
+        <div className="flex items-center gap-3 text-lg font-semibold mb-8">
+          {/* Welcome Icon */}
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="10" stroke="black" strokeWidth="2" />
+            <path
+              d="M12 16c2.5 0 4-1.5 4-4s-1.5-4-4-4-4 1.5-4 4 1.5 4 4 4z"
+              stroke="black"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Welcome, {user.name || user.email}
+        </div>
         {/* Menu */}
         <div className="space-y-6">
           <button
             onClick={() => {
-              navigate("/");
+              navigate("/home");
               onClose();
             }}
             className="flex justify-between items-center w-full text-lg font-medium py-2"
@@ -58,29 +80,10 @@ const UserSidebar = ({ onClose }) => {
           </button>
         </div>
         <hr className="my-8" />
-        {/* Akun & Layanan */}
+        {/* Layanan & Logout */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-lg">
-            {/* Akun Saya */}
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="8" r="4" stroke="black" strokeWidth="2" />
-              <path
-                d="M4 20c0-4 4-6 8-6s8 2 8 6"
-                stroke="black"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Akun Saya
-          </div>
-          <div className="flex items-center gap-3 text-lg">
-            {/* Ganti ikon Layanan Costumer dengan headset */}
+            {/* Headset Icon */}
             <svg
               className="w-6 h-6"
               fill="none"
