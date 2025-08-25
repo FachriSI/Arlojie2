@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios untuk panggilan API
+import { Eye, EyeOff } from "lucide-react"; // Import ikon dari lucide-react
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -7,10 +9,8 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Alert states
+  const [isLoading, setIsLoading] = useState(false); // Tambahkan state loading
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
-
   const navigate = useNavigate();
 
   // Auto hide alert after 3 seconds
@@ -27,26 +27,49 @@ const ForgotPassword = () => {
     setAlert({ show: true, type, message });
   };
 
-  const handleResetPassword = (e) => {
+  const handleResetPassword = async (e) => { // Ubah menjadi async function
     e.preventDefault();
+    setIsLoading(true); // Set loading menjadi true saat submit
+    setAlert({ show: false, type: "", message: "" }); // Hapus alert sebelumnya
 
-    if (newPassword !== confirmPassword) {
-      showAlert("error", "Password tidak cocok!");
+    // Validasi sisi klien
+    if (!email || !newPassword || !confirmPassword) {
+      showAlert("error", "Semua field harus diisi!");
+      setIsLoading(false);
       return;
     }
-
+    if (newPassword !== confirmPassword) {
+      showAlert("error", "Password baru dan konfirmasi password tidak cocok!");
+      setIsLoading(false);
+      return;
+    }
     if (newPassword.length < 6) {
       showAlert("error", "Password minimal 6 karakter!");
+      setIsLoading(false);
       return;
     }
 
-    // Handle password reset logic here
-    showAlert("success", "Password berhasil direset!");
+    try {
+      // Panggilan API reset password ke backend
+      const response = await axios.post("http://localhost:3000/api/auth/reset-password", {
+        email,
+        newPassword,
+      });
 
-    // Navigate after 2 seconds
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+      showAlert("success", response.data.message);
+
+      // Arahkan ke halaman login setelah 2 detik
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      // Tangani error jika reset password gagal
+      console.error("Reset password gagal:", error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat mereset password.";
+      showAlert("error", errorMessage);
+    } finally {
+      setIsLoading(false); // Selalu set loading menjadi false setelah selesai
+    }
   };
 
   return (
@@ -192,30 +215,11 @@ const ForgotPassword = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                       >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          {showPassword ? (
-                            <>
-                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                              <circle cx="12" cy="12" r="3" />
-                            </>
-                          ) : (
-                            <>
-                              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                              <path d="M12.12 12.12a3 3 0 0 1-4.24-4.24" />
-                              <line x1="1" y1="1" x2="23" y2="23" />
-                            </>
-                          )}
-                        </svg>
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -240,30 +244,11 @@ const ForgotPassword = () => {
                         }
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-600 hover:text-gray-800 transition-colors duration-200"
                       >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          {showConfirmPassword ? (
-                            <>
-                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                              <circle cx="12" cy="12" r="3" />
-                            </>
-                          ) : (
-                            <>
-                              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                              <path d="M12.12 12.12a3 3 0 0 1-4.24-4.24" />
-                              <line x1="1" y1="1" x2="23" y2="23" />
-                            </>
-                          )}
-                        </svg>
+                        {showConfirmPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -271,9 +256,40 @@ const ForgotPassword = () => {
                   <div>
                     <button
                       type="submit"
-                      className="w-full py-3 rounded-xl text-sm font-medium transition-all duration-300 ease-out bg-white text-black hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-white/30"
+                      disabled={isLoading} // Disable tombol saat loading
+                      className={`w-full py-3 rounded-xl text-sm font-medium transition-all duration-300 ease-out ${
+                        isLoading
+                          ? "bg-gray-500 text-white/80 scale-95"
+                          : "bg-white text-black hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-white/30"
+                      }`}
                     >
-                      Reset Password
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-4 w-4 text-black" // Sesuaikan warna spinner
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                          Resetting...
+                        </div>
+                      ) : (
+                        "Reset Password"
+                      )}
                     </button>
                   </div>
                   {/* Login Link */}
@@ -356,28 +372,11 @@ const ForgotPassword = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer p-[5px] flex items-center hover:bg-gray-100 rounded-full transition-colors duration-200"
                   >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {showPassword ? (
-                        <>
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </>
-                      ) : (
-                        <>
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                          <line x1="1" y1="1" x2="23" y2="23" />
-                        </>
-                      )}
-                    </svg>
+                    {showPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
                   </button>
                 </div>
               </div>
@@ -400,37 +399,49 @@ const ForgotPassword = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer p-[5px] flex items-center hover:bg-gray-100 rounded-full transition-colors duration-200"
                   >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {showConfirmPassword ? (
-                        <>
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </>
-                      ) : (
-                        <>
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                          <line x1="1" y1="1" x2="23" y2="23" />
-                        </>
-                      )}
-                    </svg>
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
                   </button>
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 bg-black text-white border-none rounded-full text-base font-medium cursor-pointer mt-4 mb-6 hover:scale-105 hover:shadow-lg transition-all duration-300 ease-out active:scale-95"
+                disabled={isLoading} // Disable tombol saat loading
+                className={`w-full py-4 bg-black text-white border-none rounded-full text-base font-medium cursor-pointer mt-4 mb-6 hover:scale-105 hover:shadow-lg transition-all duration-300 ease-out active:scale-95 ${
+                  isLoading ? "opacity-70 cursor-not-allowed" : "" // Styling untuk loading
+                }`}
               >
-                Reset Password
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" // Sesuaikan warna spinner
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Resetting...
+                  </div>
+                ) : (
+                  "Reset Password"
+                )}
               </button>
             </form>
 

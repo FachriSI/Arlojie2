@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middlewares/authMiddleware');
+// Import the specific function from the controller
+const { getDashboardStats } = require('../controllers/adminUserController'); // <-- CHANGE IS HERE
+const { verifyToken, isAdmin } = require('../middlewares/authMiddleware'); // assuming these are required
 
-router.get('/dashboard', authMiddleware, (req, res) => {
-  res.json({ message: 'Ini data dashboard, hanya bisa diakses jika login!' });
-});
+// Define the route using the specific function as a handler
+router.get('/dashboard', verifyToken, isAdmin, getDashboardStats); // <-- CHANGE IS HERE
 
 module.exports = router;

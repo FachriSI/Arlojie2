@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import ArlojieFilter from "../../assets/filter/arlojiefilter.svg";
+<<<<<<< HEAD
 import Footer from "../../components/footer";
 import { useNavigate } from "react-router-dom";
+=======
+>>>>>>> 63dffbfdd1e8ccbac0912d24637717fc9fac2f3a
 const Filter = () => {
   useEffect(() => {
     document.title = "Arlojie | Filter";
@@ -14,8 +17,6 @@ const Filter = () => {
   const [filterType, setFilterType] = useState("Terbaru");
   const [searchQuery] = useState("Jam Tangan Longines");
   const [wishlistItems, setWishlistItems] = useState(new Set());
-  const [setShowMobileSidebar] = useState(false);
-  const navigate = useNavigate();
 
   const categories = [
     { id: "jam-tangan-pria", label: "Jam Tangan Pria" },
@@ -124,8 +125,13 @@ const Filter = () => {
   return (
     <div className="min-h-screen bg-black">
       {/* Navbar */}
-      <div className="relative z-50 bg-black">
-        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
+      <div
+        className="relative z-50 "
+        data-aos="fade-down"
+        data-aos-delay="300"
+        data-aos-duration="1200"
+      >
+        <Navbar />
       </div>
 
       {/* Hero Section */}
@@ -250,7 +256,9 @@ const Filter = () => {
                         <svg
                           key={i}
                           className={`h-4 w-4 ${
-                            i < ratingValue ? "text-black" : "text-gray-300"
+                            i < ratingValue
+                              ? "text-yellow-400"
+                              : "text-gray-300"
                           }`}
                           fill="currentColor"
                           viewBox="0 0 24 24"
@@ -274,7 +282,7 @@ const Filter = () => {
               </h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>Rp 2 .000.000</span>
+                  <span>Rp 8.000.000</span>
                   <span>sampai</span>
                   <span>Rp 200.000.000</span>
                 </div>
@@ -369,10 +377,7 @@ const Filter = () => {
                   </p>
 
                   <div className="flex justify-center">
-                    <button
-                      className="px-2 md:px-6 py-2 border text-black border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
-                      onClick={() => navigate("/view")}
-                    >
+                    <button className="px-2 md:px-6 py-2 border text-black border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0">
                       Quick View
                     </button>
                   </div>

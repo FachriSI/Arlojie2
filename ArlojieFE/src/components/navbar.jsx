@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserSidebar from "./usersidebar"; // Import UserSidebar
+import { LogIn, User, ShoppingCart, Heart, Search, X, LayoutDashboard } from "lucide-react"; // Import ikon dari lucide-react
 
 const IconButton = ({ onClick, children, badge }) => (
   <button
@@ -25,19 +26,7 @@ const SearchInput = ({
 }) => (
   <div className="relative w-full">
     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-      <svg
-        className="w-5 h-5 text-gray-500"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
+      <Search className="w-5 h-5 text-gray-500" /> {/* Menggunakan ikon Search dari lucide-react */}
     </div>
     <input
       type="text"
@@ -50,12 +39,13 @@ const SearchInput = ({
   </div>
 );
 
-const Navbar = () => {
+// Menerima userData dan handleLogout sebagai props
+export const Navbar = ({ userData, handleLogout }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Untuk mobile sidebar
   const navigate = useNavigate();
 
   const toggle = (setter) => () => setter((prev) => !prev);
@@ -63,25 +53,19 @@ const Navbar = () => {
 
   const goToWishlist = () => {
     navigate("/wishlist");
-    setMenuOpen(false);
+    setMenuOpen(false); // Tutup menu mobile jika terbuka
   };
 
   const goToKeranjang = () => {
     navigate("/keranjang");
-    setMenuOpen(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("userData");
-    navigate("/login");
-    setUserDropdownOpen(false);
+    setMenuOpen(false); // Tutup menu mobile jika terbuka
   };
 
   // Handler untuk search enter
   const handleSearchKeyDown = (e) => {
     if (e.key === "Enter" && searchValue.trim() !== "") {
       navigate(`/filter?query=${encodeURIComponent(searchValue.trim())}`);
+      setSearchOpen(false); // Tutup search bar mobile setelah search
     }
   };
 
@@ -93,9 +77,9 @@ const Navbar = () => {
         data-aos-delay="300"
         data-aos-duration="1200"
       >
-        <div className="text-white text-xl md:text-2xl font-semibold font-serif tracking-wider z-50">
+        <Link to="/home" className="text-white text-xl md:text-2xl font-semibold font-serif tracking-wider z-50">
           ARLOJIE
-        </div>
+        </Link>
 
         {/* Desktop Search */}
         <div className="hidden md:flex flex-1 max-w-lg mx-8">
@@ -110,122 +94,68 @@ const Navbar = () => {
         {/* Desktop Icons */}
         <div className="hidden md:flex items-center space-x-6">
           <IconButton onClick={goToWishlist} badge="3">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
+            <Heart size={24} /> {/* Menggunakan ikon Heart dari lucide-react */}
           </IconButton>
 
-          {/* Fixed Cart Icon - Added onClick */}
           <IconButton onClick={goToKeranjang} badge="2">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z"
-              />
-            </svg>
+            <ShoppingCart size={24} /> {/* Menggunakan ikon ShoppingCart dari lucide-react */}
           </IconButton>
 
-          {/* User Dropdown */}
+          {/* User Dropdown / Login Button */}
           <div className="relative">
-            <button
-              onClick={toggle(setUserDropdownOpen)}
-              className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300"
-            >
-              {/* User Icon */}
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </button>
-            {/* Dropdown user hanya muncul saat isUserDropdownOpen true */}
-            {isUserDropdownOpen && (
+            {userData && userData.isLoggedIn ? (
+              // Jika user sudah login
               <>
-                {/* Overlay untuk close dropdown */}
+                <button
+                  onClick={toggle(setUserDropdownOpen)}
+                  className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300"
+                >
+                  <User size={24} /> {/* Menggunakan ikon User dari lucide-react */}
+                </button>
                 <div
-                  className="fixed inset-0 z-[100]"
-                  onClick={close(setUserDropdownOpen)}
-                />
-                {/* Dropdown user */}
-                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg z-[200]">
+                  className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 transform transition-all duration-300 origin-top-right ${
+                    isUserDropdownOpen
+                      ? "opacity-100 scale-100"
+                      : "opacity-0 scale-95 pointer-events-none"
+                  }`}
+                >
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="text-sm text-gray-600">Signed in as</p>
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      john.doe@example.com
+                      {userData.email} {/* Menampilkan email dari userData */}
                     </p>
                   </div>
+                  {/* Tampilkan tombol Order Manage jika role adalah 'admin' */}
+                  {userData.role === "admin" && (
+                    <button
+                      onClick={() => {
+                        navigate("/admin/orders"); // Ganti dengan rute yang sesuai untuk admin
+                        setUserDropdownOpen(false);
+                      }}
+                      className="flex items-center w-full px-4 py-3 text-sm text-black hover:bg-gray-100"
+                    >
+                      <LayoutDashboard size={16} className="mr-3" /> {/* Ikon Order Manage */}
+                      Order Manage
+                    </button>
+                  )}
+                  {/* Tombol Logout */}
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate("/ordermanage");
+                    onClick={() => {
+                      handleLogout(); // Memanggil handleLogout dari props
                       setUserDropdownOpen(false);
                     }}
-                    className="flex items-center w-full px-4 py-3 text-sm text-black hover:bg-gray-100 cursor-pointer"
+                    className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
                   >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 7h18M3 12h18M3 17h18"
-                      />
-                    </svg>
-                    Order Manage
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLogout();
-                    }}
-                    className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
+                    <LogIn size={16} className="rotate-180 mr-3" /> {/* Ikon Logout (Login terbalik) */}
                     Logout
                   </button>
                 </div>
               </>
+            ) : (
+              // Jika user belum login
+              <Link to="/login" className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300">
+                <LogIn size={24} /> {/* Menggunakan ikon LogIn dari lucide-react */}
+              </Link>
             )}
           </div>
         </div>
@@ -233,91 +163,122 @@ const Navbar = () => {
         {/* Mobile Icons */}
         <div className="flex md:hidden items-center space-x-3 z-50">
           <IconButton onClick={toggle(setSearchOpen)}>
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <Search size={20} /> {/* Menggunakan ikon Search dari lucide-react */}
           </IconButton>
 
-          {/* Fixed Mobile Cart Icon - Added onClick */}
           <IconButton onClick={goToKeranjang} badge="2">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z"
-              />
-            </svg>
+            <ShoppingCart size={20} /> {/* Menggunakan ikon ShoppingCart dari lucide-react */}
           </IconButton>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile User Icon / Login Button */}
+          {userData && userData.isLoggedIn ? (
+             <button
+                onClick={toggle(setSidebarOpen)} // Menggunakan sidebar untuk user profile di mobile
+                className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
+              >
+                <User size={20} /> {/* Icon user mobile */}
+              </button>
+          ) : (
+            <Link to="/login" className="text-white hover:text-gray-300 transition-colors p-2">
+              <LogIn size={20} />
+            </Link>
+          )}
+
+          {/* Mobile Menu Button (Hamburger) */}
           <button
-            onClick={() => setSidebarOpen(true)}
+            onClick={toggle(setMenuOpen)}
             className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
           >
-            <div className="w-5 h-5 flex flex-col justify-around">
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className={`block h-0.5 w-5 bg-current transition-all duration-300 ${
-                    i === 0 && isMenuOpen
-                      ? "rotate-45 translate-y-2"
-                      : i === 1 && isMenuOpen
-                      ? "opacity-0"
-                      : i === 2 && isMenuOpen
-                      ? "-rotate-45 -translate-y-2"
-                      : ""
-                  }`}
-                />
-              ))}
-            </div>
+             <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
           </button>
         </div>
       </nav>
-      {/* Render UserSidebar di mobile */}
-      {sidebarOpen && <UserSidebar onClose={() => setSidebarOpen(false)} />}
 
-      {/* Mobile Search */}
+      {/* Render UserSidebar di mobile - Buka jika sidebarOpen true */}
+      {sidebarOpen && userData && userData.isLoggedIn && (
+        <UserSidebar
+          userData={userData}
+          handleLogout={handleLogout}
+          onClose={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Dropdown Overlay (untuk Desktop User Dropdown) */}
+      {isUserDropdownOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={close(setUserDropdownOpen)}
+        />
+      )}
+
+      {/* Mobile Search Overlay (muncul dari atas) */}
       <div
-        className={`md:hidden transition-all duration-300 overflow-hidden ${
-          isSearchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
+        className={`md:hidden fixed top-0 left-0 w-full bg-black/90 backdrop-blur-md z-40 transition-all duration-300 ease-in-out ${
+          isSearchOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
         }`}
       >
-        <div className="px-6 pb-4">
+        <div className="flex items-center justify-between px-6 py-4">
           <SearchInput
-            placeholder="Cari Jam Tangan"
-            className="focus:ring-2 focus:ring-white/50 shadow-lg"
+            placeholder="Cari Jam Tangan..."
+            className="flex-1 mr-4"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             onKeyDown={handleSearchKeyDown}
           />
+          <button onClick={close(setSearchOpen)} className="text-white">
+            <X size={24} />
+          </button>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${
-          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={toggle(setMenuOpen)}
-      />
-      <div className="relative z-[200] bg-black">
-        {/* Dropdown user dan isi lainnya */}
+        className={`md:hidden fixed inset-y-0 left-0 bg-black/95 z-40 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="flex flex-col h-full w-64 p-4 text-white">
+          <button onClick={() => setMenuOpen(false)} className="self-end mb-4">
+            <X size={24} />
+          </button>
+          <Link to="/home" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Home</Link>
+          <Link to="/shop" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Shop</Link>
+          <Link to="/blog" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Blog</Link>
+          <Link to="/contact" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Contact</Link>
+          {/* Tambahkan link login/profile di mobile menu jika diperlukan */}
+          {userData && userData.isLoggedIn ? (
+            <div className="mt-4 pt-4 border-t border-gray-700">
+                <p className="text-sm text-gray-400">Signed in as:</p>
+                <p className="text-base font-medium mb-2 truncate">{userData.email}</p>
+                {userData.role === "admin" && (
+                    <Link
+                        to="/admin/orders"
+                        className="block py-2 text-lg hover:text-gray-400"
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Order Manager
+                    </Link>
+                )}
+                <button onClick={handleLogout} className="w-full text-left py-2 text-lg text-red-400 hover:text-red-500">
+                    Logout
+                </button>
+            </div>
+          ) : (
+            <Link to="/login" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400 mt-4 pt-4 border-t border-gray-700">
+              Login
+            </Link>
+          )}
+        </div>
       </div>
     </>
   );

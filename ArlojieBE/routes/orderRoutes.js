@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
-const authMiddleware = require('../middlewares/authMiddleware');
+// Perbaiki impor middleware: ambil 'verifyToken' secara spesifik
+const { verifyToken } = require('../middlewares/authMiddleware');
 
-// Route untuk membuat pesanan baru
-router.post('/orders/place', authMiddleware, orderController.placeOrder);
-
-// Route untuk melihat riwayat pesanan user
-router.get('/orders/history', authMiddleware, orderController.getOrderHistory);
+router.post('/', verifyToken, orderController.createOrder);
+router.get('/', verifyToken, orderController.getUserOrders);
+router.get('/:id', verifyToken, orderController.getOrderDetails);
 
 module.exports = router;

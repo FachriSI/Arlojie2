@@ -4,7 +4,7 @@ import ArlojieVideo from "../../assets/Home/arlojiehome.mp4";
 import Navbar from "../../components/navbar";
 import ArlojieVideo1 from "../../assets/Home/arlojiehome1.mp4";
 import Footer from "../../components/footer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Pastikan Link diimpor
 
 // Import 8 gambar jam yang berbeda
 import Watch1 from "../../assets/Home/jam1.svg";
@@ -18,12 +18,37 @@ import Watch8 from "../../assets/Home/jam5.svg";
 
 export const Home = () => {
   const navigate = useNavigate();
-  const [setShowMobileSidebar] = useState(false);
+  const [userData, setUserData] = useState(null); // State untuk menyimpan data pengguna
 
-  // useEffect untuk document title
   useEffect(() => {
     document.title = "Arlojie | Home";
-  }, []);
+    // Ambil data pengguna dari localStorage saat komponen dimuat
+    const storedName = localStorage.getItem("userName");
+    const storedEmail = localStorage.getItem("userEmail");
+    const storedRole = localStorage.getItem("role");
+    const storedToken = localStorage.getItem("token"); // Digunakan untuk cek status login
+
+    if (storedToken) { // Cek apakah ada token, artinya user sudah login
+      setUserData({
+        name: storedName,
+        email: storedEmail,
+        role: storedRole,
+        isLoggedIn: true,
+      });
+    } else {
+      setUserData({ isLoggedIn: false }); // Jika tidak ada token, set isLoggedIn false
+    }
+  }, []); // [] agar efek hanya berjalan sekali saat mount
+
+  const handleLogout = () => {
+    // Hapus semua data terkait otentikasi dari localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    setUserData({ isLoggedIn: false }); // Reset state userData setelah logout
+    navigate("/login"); // Arahkan ke halaman login
+  };
 
   // Data quotes
   const quotes = [
@@ -143,33 +168,42 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Background Image - Responsive */}
-      <img
-        src={Arlojieview}
-        alt="Arlojie view"
-        className="absolute top-0 right-0 w-auto h-full object-cover object-center md:object-left opacity-80"
-      />
+      {/* Hero Section - Mobile Responsive */}
+      <div className="relative min-h-screen bg-gradient-to-r from-gray-900 to-black overflow-hidden">
+        {/* Background Image - Responsive */}
+        <img
+          src={Arlojieview}
+          alt="Arlojie view"
+          className="absolute top-0 right-0 w-auto h-full object-cover object-center md:object-left opacity-80"
+        />
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 md:from-black/80 via-black/70 md:via-black/50 to-black/50 md:to-transparent"></div>
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 md:from-black/80 via-black/70 md:via-black/50 to-black/50 md:to-transparent"></div>
 
-      {/* Navbar */}
-      <div className="relative z-50 bg-black">
-        <Navbar onMobileMenu={() => setShowMobileSidebar(true)} />
-      </div>
-
-      {/* Content - Mobile Responsive */}
-      <div className="relative z-10 flex flex-col justify-center md:justify-end h-screen px-6 md:px-12 max-w-full md:max-w-2xl pb-16 md:pb-32">
-        <h1
-          className="text-white text-3xl md:text-5xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide leading-tight text-center md:text-left"
-          data-aos="fade-right"
-          data-aos-delay="600"
-          data-aos-duration="800"
+        {/* Navbar - Responsive */}
+        <div
+          className="absolute top-0 left-0 w-full z-30"
+          data-aos="fade-down"
+          data-aos-delay="300"
+          data-aos-duration="1200"
         >
-          YOUR TIME
-          <br />
-          <span className="font-light tracking-wider">YOUR SIGNATURE</span>
-        </h1>
+          {/* Meneruskan userData dan handleLogout ke komponen Navbar */}
+          <Navbar userData={userData} handleLogout={handleLogout} />
+        </div>
+
+        {/* Content - Mobile Responsive */}
+        <div className="relative z-10 flex flex-col justify-center md:justify-end h-screen px-6 md:px-12 max-w-full md:max-w-2xl pb-16 md:pb-32">
+          <h1
+            className="text-white text-3xl md:text-5xl font-bold font-['Plus_Jakarta_Sans'] tracking-wide leading-tight text-center md:text-left"
+            data-aos="fade-right"
+            data-aos-delay="600"
+            data-aos-duration="800"
+          >
+            YOUR TIME
+            <br />
+            <span className="font-light tracking-wider">YOUR SIGNATURE</span>
+          </h1>
+        </div>
       </div>
 
       {/* Quote Section - Mobile Responsive */}
@@ -453,10 +487,7 @@ export const Home = () => {
                 gaya. Waktunya melangkah dengan kelas. Waktunya Arlojie.
               </p>
               <div className="text-center lg:text-left">
-                <button
-                  className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-800 transition-colors text-sm md:text-base"
-                  onClick={() => navigate("/filter")}
-                >
+                <button className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-800 transition-colors text-sm md:text-base">
                   Beli Sekarang
                 </button>
               </div>

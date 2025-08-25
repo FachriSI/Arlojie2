@@ -1,70 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Eye, EyeOff } from "lucide-react"; // Menggunakan lucide-react untuk ikon mata
 import Terms from "../../components/termsmodal";
 
-const Input = ({ label, type = "text", value, onChange, required = true }) => (
-  <div className="mb-6">
-    <label className="block mb-2 text-[15px] font-normal text-left">
-      {label}
-    </label>
-    <input
-      type={type}
-      value={value}
-      onChange={onChange}
-      required={required}
-      className="w-full py-[14px] px-5 border-[1.5px] border-[#333] rounded-xl text-[15px] outline-none box-border focus:border-black focus:ring-2 focus:ring-black/10 transition-all duration-300"
-    />
-  </div>
-);
-
-const PasswordInput = ({ label, value, onChange, visible, toggle }) => (
-  <div className="mb-6">
-    <label className="block mb-2 text-[15px] font-normal text-left">
-      {label}
-    </label>
-    <div className="relative">
-      <input
-        type={visible ? "text" : "password"}
-        value={value}
-        onChange={onChange}
-        required
-        className="w-full py-[14px] px-5 pr-[50px] border-[1.5px] border-[#333] rounded-xl text-[15px] outline-none box-border focus:border-black focus:ring-2 focus:ring-black/10 transition-all duration-300"
-      />
-      <button
-        type="button"
-        onClick={toggle}
-        className="absolute right-3 top-1/2 -translate-y-1/2 p-[5px] hover:bg-gray-100 rounded-full transition-colors duration-200"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          {visible ? (
-            <>
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-              <circle cx="12" cy="12" r="3" />
-            </>
-          ) : (
-            <>
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-              <path d="M12.12 12.12a3 3 0 0 1-4.24-4.24" />
-              <line x1="1" y1="1" x2="23" y2="23" />
-            </>
-          )}
-        </svg>
-      </button>
-    </div>
-  </div>
-);
-
-const Register = () => {
+export const Register = () => {
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -81,34 +21,69 @@ const Register = () => {
   useEffect(() => {
     document.title = "Arlojie | Register";
   }, []);
+
   useEffect(() => {
-    if (alert.show)
-      setTimeout(() => setAlert({ show: false, type: "", message: "" }), 3000);
+    if (alert.show) {
+      const timer = setTimeout(() => {
+        setAlert({ show: false, type: "", message: "" });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   }, [alert.show]);
 
   const showAlert = (type, message) => setAlert({ show: true, type, message });
   const handleChange = (field) => (e) =>
     setForm({ ...form, [field]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    if (form.password !== form.confirmPassword)
-      return showAlert("error", "Password tidak cocok!"), setIsLoading(false);
-    if (form.password.length < 6)
-      return (
-        showAlert("error", "Password minimal 6 karakter!"), setIsLoading(false)
-      );
-    setTimeout(() => {
-      showAlert(
-        "success",
-        "Registrasi berhasil! Anda akan diarahkan ke halaman login."
-      );
-      setIsLoading(false);
-      setTimeout(() => navigate("/login"), 2000);
-    }, 1500);
-  };
+    setAlert({ show: false, type: "", message: "" }); // Hapus alert sebelumnya saat submit baru
 
+    // Validasi sisi klien
+    if (!form.username || !form.email || !form.password || !form.confirmPassword) {
+      showAlert("error", "Semua field harus diisi!");
+      setIsLoading(false);
+      return;
+    }
+    if (form.password !== form.confirmPassword) {
+      showAlert("error", "Password tidak cocok!");
+      setIsLoading(false);
+      return;
+    }
+    if (form.password.length < 6) {
+      showAlert("error", "Password minimal 6 karakter!");
+      setIsLoading(false);
+      return;
+    }
+    if (!agree) {
+      showAlert("error", "Anda harus menyetujui syarat & ketentuan.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Panggilan API register ke backend
+      const response = await axios.post("http://localhost:3000/api/auth/register", {
+        name: form.username,
+        email: form.email,
+        password: form.password,
+      });
+
+      showAlert("success", response.data.message + ". Anda akan diarahkan ke halaman login.");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      console.error("Registrasi gagal:", error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat registrasi.";
+      showAlert("error", errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   return (
     <>
       {/* Mobile Layout */}

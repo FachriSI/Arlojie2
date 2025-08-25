@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Tambahkan import ini
 
 const product = {
   image: "https://i.ibb.co/6WZb7gD/longines-master.png", // Ganti dengan url gambar produk
@@ -11,12 +10,6 @@ const ratingLabels = ["", "Buruk", "Cukup", "Baik", "Sangat Baik", "Sempurna"];
 export const Rating = ({ onClose, onSubmit }) => {
   const [stars, setStars] = useState(5);
   const [comment, setComment] = useState("");
-  const navigate = useNavigate(); // Inisialisasi navigate
-
-  const handleOk = () => {
-    if (onSubmit) onSubmit({ stars, comment });
-    navigate("/ordermanage"); // Navigasi ke halaman order manage
-  };
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto">
@@ -69,7 +62,7 @@ export const Rating = ({ onClose, onSubmit }) => {
         </button>
         <button
           className="px-8 py-2 rounded-full bg-black text-white font-semibold shadow hover:bg-gray-900"
-          onClick={handleOk} // Ganti handler
+          onClick={() => onSubmit && onSubmit({ stars, comment })}
         >
           Ok
         </button>

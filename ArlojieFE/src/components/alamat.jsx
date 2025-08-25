@@ -2,14 +2,14 @@ import React, { useState } from "react";
 
 const Alamat = ({ onSubmit, onCancel }) => {
   const [form, setForm] = useState({
-    nama: "",
-    telepon: "",
+    namaLengkap: "",
+    nomorTelepon: "",
     provinsi: "",
     kota: "",
     kecamatan: "",
     kelurahan: "",
-    jalan: "",
-    detail: "",
+    alamatLengkap: "",
+    detailLainnya: "",
   });
 
   const handleChange = (e) => {
@@ -18,7 +18,16 @@ const Alamat = ({ onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(form);
+    
+    // Validasi sederhana di sisi frontend
+    const requiredFields = ['namaLengkap', 'nomorTelepon', 'provinsi', 'kota', 'kecamatan', 'kelurahan', 'alamatLengkap'];
+    const allFieldsFilled = requiredFields.every(field => form[field].trim() !== '');
+
+    if (allFieldsFilled) {
+        if (onSubmit) onSubmit(form);
+    } else {
+        alert("Harap lengkapi semua field yang wajib diisi!");
+    }
   };
 
   return (
@@ -35,8 +44,8 @@ const Alamat = ({ onSubmit, onCancel }) => {
             </label>
             <input
               type="text"
-              name="nama"
-              value={form.nama}
+              name="namaLengkap"
+              value={form.namaLengkap}
               onChange={handleChange}
               required
               className="w-full border border-gray-800 rounded-xl px-3 py-1.5 text-base outline-none"
@@ -48,8 +57,8 @@ const Alamat = ({ onSubmit, onCancel }) => {
             </label>
             <input
               type="text"
-              name="telepon"
-              value={form.telepon}
+              name="nomorTelepon"
+              value={form.nomorTelepon}
               onChange={handleChange}
               required
               className="w-full border border-gray-800 rounded-xl px-3 py-1.5 text-base outline-none"
@@ -101,22 +110,24 @@ const Alamat = ({ onSubmit, onCancel }) => {
           />
         </div>
         <div className="mb-4">
+            <label className="font-medium text-base mb-1 block">Nama Jalan, No Rumah</label>
           <textarea
-            name="jalan"
-            value={form.jalan}
+            name="alamatLengkap"
+            value={form.alamatLengkap}
             onChange={handleChange}
             required
             placeholder="Nama Jalan, No Rumah"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base bg-gray-100 text-gray-500 min-h-[36px] outline-none resize-none"
+            className="w-full border border-gray-800 rounded-xl px-3 py-1.5 text-base outline-none resize-none"
           />
         </div>
         <div className="mb-8">
+            <label className="font-medium text-base mb-1 block">Detail lainnya (Cth: Blok, unit, patokan)</label>
           <textarea
-            name="detail"
-            value={form.detail}
+            name="detailLainnya"
+            value={form.detailLainnya}
             onChange={handleChange}
             placeholder="Detail lainnya (Cth: Blok, unit, patokan)"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-base bg-gray-100 text-gray-500 min-h-[28px] outline-none resize-none"
+            className="w-full border border-gray-800 rounded-xl px-3 py-1.5 text-base outline-none resize-none"
           />
         </div>
         <div className="flex justify-center gap-6">
