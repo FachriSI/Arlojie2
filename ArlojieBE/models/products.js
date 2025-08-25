@@ -1,15 +1,18 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-// Hapus import OrderItem
+
 const Product = sequelize.define('Product', {
   name: { type: DataTypes.STRING, allowNull: false },
   price: { type: DataTypes.INTEGER, allowNull: false },
   description: { type: DataTypes.TEXT, allowNull: true },
   stock: { type: DataTypes.INTEGER, defaultValue: 0 },
-  category: { type: DataTypes.ENUM('Jam Tangan Pria', 'Jam Tangan Wanita', 'Jam Tangan Anak-anak'), allowNull: false },
+  category: { 
+    type: DataTypes.ENUM('Jam Tangan Pria', 'Jam Tangan Wanita', 'Jam Tangan Anak-anak'), 
+    allowNull: false 
+  },
   status: { type: DataTypes.ENUM('aktif', 'nonaktif'), defaultValue: 'aktif' },
   images: {
-    type: DataTypes.JSON, 
+    type: DataTypes.JSON,
     allowNull: false,
     validate: {
       isArrayOfImages(value) {
@@ -19,5 +22,9 @@ const Product = sequelize.define('Product', {
       }
     }
   }
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  tableName: 'products',
+});
+
 module.exports = Product;

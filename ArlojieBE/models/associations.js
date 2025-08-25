@@ -1,28 +1,29 @@
-const User = require('./users');
-const Product = require('./products');
-const Order = require('./orders');
-const OrderItem = require('./order_items');
-const CartItem = require('./cart_items');
+// models/associations.js
 
-// Definisikan semua relasi di sini
+const User = require('./users'); // Pastikan path ini benar ke file model User Anda
+const Product = require('./products'); // Pastikan path ini benar ke file model Product Anda
+const Order = require('./orders'); // Pastikan path ini benar ke file model Order Anda
+const OrderItem = require('./order_items'); // Pastikan path ini benar ke file model OrderItem Anda
+const CartItem = require('./cart_items'); // Pastikan path ini benar ke file model CartItem Anda
+
 // Relasi User
 User.hasMany(Order, { foreignKey: 'user_id' });
 User.hasMany(CartItem, { foreignKey: 'user_id' });
+Order.belongsTo(User, { foreignKey: 'user_id' });
 
 // Relasi Product
 Product.hasMany(OrderItem, { foreignKey: 'product_id' });
 Product.hasMany(CartItem, { foreignKey: 'product_id' });
-
-// Relasi Order
-Order.belongsTo(User, { foreignKey: 'user_id' });
-Order.hasMany(OrderItem, { foreignKey: 'order_id' });
-
-// Relasi OrderItem
-OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
 OrderItem.belongsTo(Product, { foreignKey: 'product_id' });
-
-// Relasi CartItem
-CartItem.belongsTo(User, { foreignKey: 'user_id' });
 CartItem.belongsTo(Product, { foreignKey: 'product_id' });
 
-// Relasi tidak harus diekspor
+// Relasi Order
+Order.hasMany(OrderItem, { foreignKey: 'order_id' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
+
+// Tambahan: Pastikan model-model lain juga memiliki relasi yang sesuai
+// Misalnya, jika OrderItem memiliki harga saat itu:
+// OrderItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
+
+// Ekspor semua model agar bisa diakses di tempat lain jika diperlukan
+module.exports = { User, Product, Order, OrderItem, CartItem };
