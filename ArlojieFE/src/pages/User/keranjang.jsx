@@ -22,7 +22,7 @@ const Keranjang = () => {
   const [estimatedShipping] = useState(25000);
   const navigate = useNavigate();
   const [showAlamatForm, setShowAlamatForm] = useState(false);
-  
+
   // State untuk userData dan handleLogout
   const [userData, setUserData] = useState(null);
   const handleLogout = () => {
@@ -73,7 +73,9 @@ const Keranjang = () => {
 
   const handleAlamatSubmit = (data) => {
     setShowAlamatForm(false);
-    navigate("/checkout", { state: { alamat: data, cartItems: cartItems, grandTotal: grandTotal } });
+    navigate("/checkout", {
+      state: { alamat: data, cartItems: cartItems, grandTotal: grandTotal },
+    });
   };
 
   return (
@@ -84,7 +86,11 @@ const Keranjang = () => {
             className="w-[350px] max-w-full h-full bg-gray-200 bg-opacity-80 backdrop-blur-lg shadow-xl p-8 flex flex-col"
             style={{ animation: "slideInLeft 0.3s" }}
           >
-            <Usersidebar userData={userData} handleLogout={handleLogout} onClose={() => setShowSidebar(false)} />
+            <Usersidebar
+              userData={userData}
+              handleLogout={handleLogout}
+              onClose={() => setShowSidebar(false)}
+            />
             <button
               className="absolute top-8 right-8 text-2xl font-bold"
               onClick={() => setShowSidebar(false)}
@@ -106,9 +112,7 @@ const Keranjang = () => {
         </div>
       )}
       <div className="relative z-50 bg-black">
-        <div className="bg-black">
-          <Navbar userData={userData} handleLogout={handleLogout} />
-        </div>
+        <Navbar userData={userData} handleLogout={handleLogout} />
       </div>
       <div className="relative h-64 bg-gradient-to-r from-gray-900 to-black overflow-hidden">
         <img
