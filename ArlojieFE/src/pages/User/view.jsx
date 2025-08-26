@@ -270,6 +270,12 @@ export const View = () => {
                 >
                   Quick View
                 </button>
+                <button
+                  className="w-full border border-black rounded-full py-2 text-sm mt-2 bg-black text-white hover:bg-gray-900 transition-colors"
+                  onClick={() => navigate("/checkout")}
+                >
+                  Checkout
+                </button>
               </div>
             ))}
           </div>

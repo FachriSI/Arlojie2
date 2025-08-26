@@ -368,13 +368,21 @@ const Filter = () => {
                     Rp 4.545.000
                   </p>
 
-                  <div className="flex justify-center">
+                  <div className="justify-center">
                     <button
-                      className="px-2 md:px-6 py-2 border text-black border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
+                      className="px-4 md:px-6 py-2 border text-black border-gray-900 text-xs md:text-sm rounded-lg hover:bg-gray-900 hover:text-white hover:scale-105 transition-all duration-300 bg-white opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
                       onClick={() => navigate("/view")}
                     >
                       Quick View
                     </button>
+                    <div className="flex justify-center">
+                      <button
+                        className="mt-2 px-4 md:px-6 py-2 border text-white border-black text-xs md:text-sm rounded-lg bg-black hover:bg-gray-800 hover:scale-105 transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
+                        onClick={() => navigate("/checkout")}
+                      >
+                        Checkout
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
