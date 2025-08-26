@@ -6,7 +6,7 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-100 flex">
-      <div className="bg-gray-100/60 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
+      <div className="bg-gray-200 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
         {/* Close Button */}
         <button
           onClick={onClose}

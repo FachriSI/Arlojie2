@@ -18,6 +18,7 @@ import Watch8 from "../../assets/Home/jam5.svg";
 
 export const Home = () => {
   const navigate = useNavigate();
+
   const [userData, setUserData] = useState(null); // State untuk menyimpan data pengguna
 
   useEffect(() => {
@@ -28,7 +29,8 @@ export const Home = () => {
     const storedRole = localStorage.getItem("role");
     const storedToken = localStorage.getItem("token"); // Digunakan untuk cek status login
 
-    if (storedToken) { // Cek apakah ada token, artinya user sudah login
+    if (storedToken) {
+      // Cek apakah ada token, artinya user sudah login
       setUserData({
         name: storedName,
         email: storedEmail,
@@ -181,12 +183,7 @@ export const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 md:from-black/80 via-black/70 md:via-black/50 to-black/50 md:to-transparent"></div>
 
         {/* Navbar - Responsive */}
-        <div
-          className="absolute top-0 left-0 w-full z-30"
-          data-aos="fade-down"
-          data-aos-delay="300"
-          data-aos-duration="1200"
-        >
+        <div>
           {/* Meneruskan userData dan handleLogout ke komponen Navbar */}
           <Navbar userData={userData} handleLogout={handleLogout} />
         </div>

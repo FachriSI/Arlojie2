@@ -1,10 +1,6 @@
 import React from "react";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -25,7 +21,7 @@ import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminUserDetail from "./pages/Admin/AdminUserDetail";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminOrderDetail from "./pages/Admin/AdminOrderDetail";
-import AdminProductsNew from "./pages/Admin/AdminProductsNew"; 
+import AdminProductsNew from "./pages/Admin/AdminProductsNew";
 import AddProduct from "./pages/Admin/AddProduct";
 
 function App() {

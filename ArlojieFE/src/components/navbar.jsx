@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import UserSidebar from "./usersidebar"; // Import UserSidebar
-import { LogIn, User, ShoppingCart, Heart, Search, X, LayoutDashboard } from "lucide-react"; // Import ikon dari lucide-react
+import UserSidebar from "../components/usersidebar"; // Import UserSidebar
+import {
+  LogIn,
+  User,
+  ShoppingCart,
+  Heart,
+  Search,
+  X,
+  LayoutDashboard,
+} from "lucide-react"; // Import ikon dari lucide-react
 
 const IconButton = ({ onClick, children, badge }) => (
   <button
@@ -26,7 +34,8 @@ const SearchInput = ({
 }) => (
   <div className="relative w-full">
     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-      <Search className="w-5 h-5 text-gray-500" /> {/* Menggunakan ikon Search dari lucide-react */}
+      <Search className="w-5 h-5 text-gray-500" />{" "}
+      {/* Menggunakan ikon Search dari lucide-react */}
     </div>
     <input
       type="text"
@@ -77,7 +86,10 @@ export const Navbar = ({ userData, handleLogout }) => {
         data-aos-delay="300"
         data-aos-duration="1200"
       >
-        <Link to="/home" className="text-white text-xl md:text-2xl font-semibold font-serif tracking-wider z-50">
+        <Link
+          to="/home"
+          className="text-white text-xl md:text-2xl font-semibold font-serif tracking-wider z-50"
+        >
           ARLOJIE
         </Link>
 
@@ -98,7 +110,8 @@ export const Navbar = ({ userData, handleLogout }) => {
           </IconButton>
 
           <IconButton onClick={goToKeranjang} badge="2">
-            <ShoppingCart size={24} /> {/* Menggunakan ikon ShoppingCart dari lucide-react */}
+            <ShoppingCart size={24} />{" "}
+            {/* Menggunakan ikon ShoppingCart dari lucide-react */}
           </IconButton>
 
           {/* User Dropdown / Login Button */}
@@ -110,7 +123,8 @@ export const Navbar = ({ userData, handleLogout }) => {
                   onClick={toggle(setUserDropdownOpen)}
                   className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300"
                 >
-                  <User size={24} /> {/* Menggunakan ikon User dari lucide-react */}
+                  <User size={24} />{" "}
+                  {/* Menggunakan ikon User dari lucide-react */}
                 </button>
                 <div
                   className={`absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 transform transition-all duration-300 origin-top-right ${
@@ -134,7 +148,8 @@ export const Navbar = ({ userData, handleLogout }) => {
                       }}
                       className="flex items-center w-full px-4 py-3 text-sm text-black hover:bg-gray-100"
                     >
-                      <LayoutDashboard size={16} className="mr-3" /> {/* Ikon Order Manage */}
+                      <LayoutDashboard size={16} className="mr-3" />{" "}
+                      {/* Ikon Order Manage */}
                       Order Manage
                     </button>
                   )}
@@ -146,15 +161,20 @@ export const Navbar = ({ userData, handleLogout }) => {
                     }}
                     className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700"
                   >
-                    <LogIn size={16} className="rotate-180 mr-3" /> {/* Ikon Logout (Login terbalik) */}
+                    <LogIn size={16} className="rotate-180 mr-3" />{" "}
+                    {/* Ikon Logout (Login terbalik) */}
                     Logout
                   </button>
                 </div>
               </>
             ) : (
               // Jika user belum login
-              <Link to="/login" className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300">
-                <LogIn size={24} /> {/* Menggunakan ikon LogIn dari lucide-react */}
+              <Link
+                to="/login"
+                className="text-white hover:text-gray-300 hover:scale-110 transition-all duration-300"
+              >
+                <LogIn size={24} />{" "}
+                {/* Menggunakan ikon LogIn dari lucide-react */}
               </Link>
             )}
           </div>
@@ -163,23 +183,28 @@ export const Navbar = ({ userData, handleLogout }) => {
         {/* Mobile Icons */}
         <div className="flex md:hidden items-center space-x-3 z-50">
           <IconButton onClick={toggle(setSearchOpen)}>
-            <Search size={20} /> {/* Menggunakan ikon Search dari lucide-react */}
+            <Search size={20} />{" "}
+            {/* Menggunakan ikon Search dari lucide-react */}
           </IconButton>
 
           <IconButton onClick={goToKeranjang} badge="2">
-            <ShoppingCart size={20} /> {/* Menggunakan ikon ShoppingCart dari lucide-react */}
+            <ShoppingCart size={20} />{" "}
+            {/* Menggunakan ikon ShoppingCart dari lucide-react */}
           </IconButton>
 
           {/* Mobile User Icon / Login Button */}
           {userData && userData.isLoggedIn ? (
-             <button
-                onClick={toggle(setSidebarOpen)} // Menggunakan sidebar untuk user profile di mobile
-                className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
-              >
-                <User size={20} /> {/* Icon user mobile */}
-              </button>
+            <button
+              onClick={toggle(setSidebarOpen)} // Menggunakan sidebar untuk user profile di mobile
+              className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
+            >
+              <User size={20} />
+            </button>
           ) : (
-            <Link to="/login" className="text-white hover:text-gray-300 transition-colors p-2">
+            <Link
+              to="/login"
+              className="text-white hover:text-gray-300 transition-colors p-2"
+            >
               <LogIn size={20} />
             </Link>
           )}
@@ -189,7 +214,7 @@ export const Navbar = ({ userData, handleLogout }) => {
             onClick={toggle(setMenuOpen)}
             className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
           >
-             <svg
+            <svg
               className="w-5 h-5"
               fill="none"
               stroke="currentColor"
@@ -226,7 +251,9 @@ export const Navbar = ({ userData, handleLogout }) => {
       {/* Mobile Search Overlay (muncul dari atas) */}
       <div
         className={`md:hidden fixed top-0 left-0 w-full bg-black/90 backdrop-blur-md z-40 transition-all duration-300 ease-in-out ${
-          isSearchOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+          isSearchOpen
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-full opacity-0"
         }`}
       >
         <div className="flex items-center justify-between px-6 py-4">
@@ -243,43 +270,13 @@ export const Navbar = ({ userData, handleLogout }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`md:hidden fixed inset-y-0 left-0 bg-black/95 z-40 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        <div className="flex flex-col h-full w-64 p-4 text-white">
-          <button onClick={() => setMenuOpen(false)} className="self-end mb-4">
-            <X size={24} />
-          </button>
-          <Link to="/home" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Home</Link>
-          <Link to="/shop" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Shop</Link>
-          <Link to="/blog" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Blog</Link>
-          <Link to="/contact" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400">Contact</Link>
-          {/* Tambahkan link login/profile di mobile menu jika diperlukan */}
-          {userData && userData.isLoggedIn ? (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-                <p className="text-sm text-gray-400">Signed in as:</p>
-                <p className="text-base font-medium mb-2 truncate">{userData.email}</p>
-                {userData.role === "admin" && (
-                    <Link
-                        to="/admin/orders"
-                        className="block py-2 text-lg hover:text-gray-400"
-                        onClick={() => setMenuOpen(false)}
-                    >
-                        Order Manager
-                    </Link>
-                )}
-                <button onClick={handleLogout} className="w-full text-left py-2 text-lg text-red-400 hover:text-red-500">
-                    Logout
-                </button>
-            </div>
-          ) : (
-            <Link to="/login" onClick={() => setMenuOpen(false)} className="py-2 text-lg hover:text-gray-400 mt-4 pt-4 border-t border-gray-700">
-              Login
-            </Link>
-          )}
-        </div>
-      </div>
+      {isMenuOpen && (
+        <UserSidebar
+          userData={userData}
+          handleLogout={handleLogout}
+          onClose={() => setMenuOpen(false)}
+        />
+      )}
     </>
   );
 };
