@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Heart,
   ShoppingCart,
+  Headphones,
 } from "lucide-react";
 
 const UserSidebar = ({ userData, handleLogout, onClose }) => {
@@ -66,32 +67,13 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
           </Link>
         </div>
 
-        <hr className="my-8" />
+        {/* Garis pembatas */}
+        <hr className="my-6 border-black" />
 
         {/* Akun & Layanan */}
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-lg">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M12 20v-2m0-4v-4m0-4V4m0 16a8 8 0 100-16 8 8 0 000 16z"
-                stroke="black"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M9 16v1a3 3 0 006 0v-1"
-                stroke="black"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Headphones className="w-6 h-6 text-black" />
             Layanan Customer
           </div>
           {userData && userData.isLoggedIn && (
