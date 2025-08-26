@@ -193,20 +193,13 @@ export const Navbar = ({ userData, handleLogout }) => {
           </IconButton>
 
           {/* Mobile User Icon / Login Button */}
-          {userData && userData.isLoggedIn ? (
+          {userData && userData.isLoggedIn && (
             <button
-              onClick={toggle(setSidebarOpen)} // Menggunakan sidebar untuk user profile di mobile
+              onClick={() => setSidebarOpen(true)}
               className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
             >
               <User size={20} />
             </button>
-          ) : (
-            <Link
-              to="/login"
-              className="text-white hover:text-gray-300 transition-colors p-2"
-            >
-              <LogIn size={20} />
-            </Link>
           )}
 
           {/* Mobile Menu Button (Hamburger) */}

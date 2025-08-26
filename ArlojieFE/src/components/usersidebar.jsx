@@ -27,6 +27,12 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
           ARLOJIE
         </div>
 
+        {/* Welcome User */}
+        <div className="mb-6 text-lg font-semibold flex items-center gap-2">
+          <User className="w-6 h-6 text-black" />
+          Welcome, {userData?.name ? userData.name : "User"}
+        </div>
+
         {/* User Profile Info */}
         {userData && userData.isLoggedIn && (
           <div className="mb-6 pb-6 border-b border-gray-300">
@@ -76,7 +82,7 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
             <Headphones className="w-6 h-6 text-black" />
             Layanan Customer
           </div>
-          {userData && userData.isLoggedIn && (
+          {userData && userData.isLoggedIn ? (
             <button
               onClick={() => {
                 handleLogout();
@@ -87,6 +93,15 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
               <LogOut size={24} />
               Logout
             </button>
+          ) : (
+            <Link
+              to="/login"
+              onClick={onClose}
+              className="w-full text-left flex items-center gap-3 text-lg font-medium py-2 text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-md transition-colors"
+            >
+              <LogOut size={24} className="rotate-180" />
+              Login
+            </Link>
           )}
         </div>
       </div>
