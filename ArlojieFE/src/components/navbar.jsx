@@ -236,7 +236,7 @@ export const Navbar = ({ userData, handleLogout }) => {
       {/* Dropdown Overlay (untuk Desktop User Dropdown) */}
       {isUserDropdownOpen && (
         <div
-          className="fixed inset-0 z-40"
+          className=" inset-0 z-100"
           onClick={close(setUserDropdownOpen)}
         />
       )}
