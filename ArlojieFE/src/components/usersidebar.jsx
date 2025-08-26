@@ -1,11 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom"; 
-import { X, User, LogOut, LayoutDashboard, Heart, ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  X,
+  User,
+  LogOut,
+  LayoutDashboard,
+  Heart,
+  ShoppingCart,
+} from "lucide-react";
 
 const UserSidebar = ({ userData, handleLogout, onClose }) => {
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 z-100 flex">
+    <div className="fixed inset-0 bg-black bg-opacity-60 z-[999] flex">
       <div className="bg-gray-200 backdrop-blur-lg w-[90vw] max-w-sm h-full p-8 relative shadow-xl">
         {/* Close Button */}
         <button
@@ -61,15 +67,9 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
         </div>
 
         <hr className="my-8" />
-        
+
         {/* Akun & Layanan */}
         <div className="space-y-6">
-          <div className="flex items-center gap-3 text-lg">
-            <User size={24} />
-            <Link to="/profile" onClick={onClose}>
-                Akun Saya
-            </Link>
-          </div>
           <div className="flex items-center gap-3 text-lg">
             <svg
               className="w-6 h-6"
