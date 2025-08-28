@@ -78,10 +78,15 @@ const UserSidebar = ({ userData, handleLogout, onClose }) => {
 
         {/* Akun & Layanan */}
         <div className="space-y-6">
-          <div className="flex items-center gap-3 text-lg">
+          <a
+            href="https://wa.me/qr/VEM4OEYRBHH6G1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 text-lg hover:text-green-600 transition-colors"
+          >
             <Headphones className="w-6 h-6 text-black" />
             Layanan Customer
-          </div>
+          </a>
           {userData && userData.isLoggedIn ? (
             <button
               onClick={() => {

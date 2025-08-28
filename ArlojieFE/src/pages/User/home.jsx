@@ -465,6 +465,14 @@ export const Home = () => {
                   >
                     Quick View
                   </button>
+                  <div className="flex justify-center">
+                    <button
+                      className="mt-2 px-4 md:px-6 py-2 border text-white border-black text-xs md:text-sm rounded-lg bg-black hover:bg-gray-800 hover:scale-105 transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 transform translate-y-0 md:translate-y-4 md:group-hover:translate-y-0"
+                      onClick={() => navigate("/checkout")}
+                    >
+                      Checkout
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
