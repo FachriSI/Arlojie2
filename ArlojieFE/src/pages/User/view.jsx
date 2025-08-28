@@ -50,12 +50,7 @@ export const View = () => {
       )}
       {/* Navbar */}
       <div className="relative z-50 bg-black">
-        <div
-          className="bg-black"
-          data-aos="fade-down"
-          data-aos-delay="300"
-          data-aos-duration="1200"
-        >
+        <div>
           <Navbar />
         </div>
       </div>

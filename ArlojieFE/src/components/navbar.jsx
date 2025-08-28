@@ -192,16 +192,6 @@ export const Navbar = ({ userData, handleLogout }) => {
             {/* Menggunakan ikon ShoppingCart dari lucide-react */}
           </IconButton>
 
-          {/* Mobile User Icon / Login Button */}
-          {userData && userData.isLoggedIn && (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="text-white hover:text-gray-300 focus:outline-none transition-all p-2"
-            >
-              <User size={20} />
-            </button>
-          )}
-
           {/* Mobile Menu Button (Hamburger) */}
           <button
             onClick={toggle(setMenuOpen)}
@@ -235,10 +225,7 @@ export const Navbar = ({ userData, handleLogout }) => {
 
       {/* Dropdown Overlay (untuk Desktop User Dropdown) */}
       {isUserDropdownOpen && (
-        <div
-          className=" inset-0 z-100"
-          onClick={close(setUserDropdownOpen)}
-        />
+        <div className=" inset-0 z-100" onClick={close(setUserDropdownOpen)} />
       )}
 
       {/* Mobile Search Overlay (muncul dari atas) */}
