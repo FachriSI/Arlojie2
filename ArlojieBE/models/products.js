@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Category = require('./categories');
 
 const Product = sequelize.define('Product', {
   name: { type: DataTypes.STRING, allowNull: false },
@@ -16,8 +17,8 @@ const Product = sequelize.define('Product', {
     allowNull: false,
     validate: {
       isArrayOfImages(value) {
-        if (!Array.isArray(value) || value.length < 3) {
-          throw new Error('Minimal harus upload 3 foto produk');
+        if (!Array.isArray(value) || value.length > 3) {
+          throw new Error('Maksimal upload 3 foto produk');
         }
       }
     }

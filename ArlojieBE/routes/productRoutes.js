@@ -1,11 +1,9 @@
-// routes/productRoutes.js
 const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController");
 const multer = require("multer");
 const path = require("path");
 
-// Konfigurasi multer (untuk upload foto)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/products/");
@@ -16,13 +14,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Rute untuk mendapatkan semua produk
-router.get("/", productController.getAllProducts);
-
-// Rute untuk menambah produk baru
-router.post("/", upload.array("images", 3), productController.createProduct);
-
-// Rute untuk menghapus produk
-router.delete("/:id", productController.deleteProduct);
+// ROUTES
+router.get("/", productController.getAllProducts); // Ambil semua produk
+router.get("/:id", productController.getProductById); // Ambil produk berdasarkan ID
+router.post("/", upload.array("images", 3), productController.createProduct); // Tambah produkrouter.get("/:id", productController.getProductById);
+router.put("/:id", upload.array("images", 3), productController.updateProduct);
+router.delete("/:id", productController.deleteProduct); // Hapus produk
 
 module.exports = router;

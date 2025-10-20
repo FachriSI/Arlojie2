@@ -1,38 +1,24 @@
 const CartItem = require('../models/cart_items');
-const Product = require('../models/products'); // Asumsi model Product juga diimpor untuk relasi
-const sequelize = require('sequelize'); // Diimpor tapi tidak digunakan, bisa dihapus jika tidak diperlukan
-
-// Pastikan relasi antara CartItem dan Product sudah didefinisikan di file model Anda.
-// Contoh di models/cart_items.js:
-// CartItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
-
-/**
- * Menambahkan atau memperbarui item di keranjang pengguna.
- * Jika produk sudah ada, kuantitas akan diperbarui. Jika belum, item baru akan dibuat.
- */
+const Product = require('../models/products'); 
+const sequelize = require('sequelize'); 
 exports.addToCart = async (req, res) => {
     try {
-        const { product_id, quantity } = req.body;
-        const user_id = req.user.id; // Diambil dari token yang diverifikasi oleh middleware
-
-        // Validasi input dasar
-        if (!product_id || !quantity || quantity <= 0) {
+        const { productId, quantity } = req.body;
+        const userId = req.user.id; 
+        if (!productId || !quantity || quantity <= 0) {
             return res.status(400).json({ message: 'Product ID dan kuantitas valid harus disediakan.' });
         }
 
-        // Cek apakah produk sudah ada di keranjang user
         let cartItem = await CartItem.findOne({
-            where: { user_id, product_id }
+            where: { userId, productId }
         });
 
         if (cartItem) {
-            // Jika item sudah ada, perbarui kuantitas
             cartItem.quantity += quantity;
             await cartItem.save();
             return res.status(200).json({ message: 'Kuantitas item keranjang berhasil diperbarui.', cartItem });
         } else {
-            // Jika item belum ada, buat item baru
-            cartItem = await CartItem.create({ user_id, product_id, quantity });
+            cartItem = await CartItem.create({ userId, productId, quantity });
             return res.status(201).json({ message: 'Item berhasil ditambahkan ke keranjang.', cartItem });
         }
     } catch (error) {
@@ -40,18 +26,14 @@ exports.addToCart = async (req, res) => {
         res.status(500).json({ message: 'Gagal menambahkan item ke keranjang.', error: error.message });
     }
 };
-
-/**
- * Mengambil semua item di keranjang belanja pengguna yang sedang login.
- */
 exports.getCart = async (req, res) => {
     try {
-        const user_id = req.user.id; // Diambil dari token
+        const userId = req.user.id;
         const cartItems = await CartItem.findAll({
-            where: { user_id },
+            where: { userId },
             include: [{ 
-                model: Product, // Pastikan relasi didefinisikan dan diimpor di model CartItem
-                attributes: ['id', 'name', 'price', 'images'] // Sesuaikan atribut produk yang ingin ditampilkan
+                model: Product, 
+                attributes: ['id', 'name', 'price', 'images'] 
             }],
             order: [['createdAt', 'ASC']],
         });
@@ -62,23 +44,17 @@ exports.getCart = async (req, res) => {
     }
 };
 
-/**
- * Memperbarui kuantitas item tertentu di keranjang.
- */
 exports.updateCart = async (req, res) => {
     try {
-        const { id } = req.params; // ID item keranjang
+        const { id } = req.params; 
         const { quantity } = req.body;
-        const user_id = req.user.id; // Diambil dari token
+        const userId = req.user.id; 
 
-        // Validasi input
         if (!quantity || quantity <= 0) {
             return res.status(400).json({ message: 'Kuantitas valid harus disediakan.' });
         }
-
-        // Cari item keranjang dan pastikan item tersebut milik user yang sedang login
         const cartItem = await CartItem.findOne({
-            where: { id, user_id }
+            where: { id, userId }
         });
 
         if (!cartItem) {
@@ -95,17 +71,13 @@ exports.updateCart = async (req, res) => {
     }
 };
 
-/**
- * Menghapus item tertentu dari keranjang.
- */
 exports.removeFromCart = async (req, res) => {
     try {
-        const { id } = req.params; // ID item keranjang
-        const user_id = req.user.id; // Diambil dari token
+        const { id } = req.params; 
+        const userId = req.user.id; 
 
-        // Cari item keranjang dan pastikan item tersebut milik user yang sedang login
         const cartItem = await CartItem.findOne({
-            where: { id, user_id }
+            where: { id, userId }
         });
 
         if (!cartItem) {

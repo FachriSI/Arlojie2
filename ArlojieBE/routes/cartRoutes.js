@@ -1,23 +1,73 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-// Perbaiki impor middleware: ambil 'verifyToken' secara spesifik
-const { verifyToken } = require('../middlewares/authMiddleware');
-const cartController = require('../controllers/cartController');
+const CartItem = require("../models/cart_items");
+const Product = require("../models/products");
+const { verifyToken } = require("../middlewares/authMiddleware");
 
-// Catatan: Asumsi file utama server (index.js) menggunakan:
-// app.use('/api/cart', cartRoutes);
-// Maka, rute-rute di sini tidak perlu diawali dengan '/cart' lagi.
+router.post("/", verifyToken, async (req, res) => {
+  try {
+    const { productId, quantity } = req.body; 
+    const userId = req.user.id;
 
-// Rute untuk menambahkan item ke keranjang (POST /api/cart/add)
-router.post('/add', verifyToken, cartController.addToCart);
+    if (!productId || !quantity || quantity <= 0) {
+      return res.status(400).json({ success: false, message: 'Data tidak lengkap.' });
+    }
+    let item = await CartItem.findOne({ where: { userId, productId } });
 
-// Rute untuk mendapatkan isi keranjang (GET /api/cart)
-router.get('/', verifyToken, cartController.getCart);
+    if (item) {
+      item.quantity += quantity;
+      await item.save();
+    } else {
+      item = await CartItem.create({ userId, productId, quantity });
+    }
 
-// Rute untuk memperbarui kuantitas item di keranjang (PUT /api/cart/update/:id)
-router.put('/update/:id', verifyToken, cartController.updateCart);
+    res.status(201).json({ success: true, message: 'Item berhasil ditambahkan', item });
+  } catch (err) {
+    console.error("Error di POST /api/cart:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
 
-// Rute untuk menghapus item dari keranjang (DELETE /api/cart/remove/:id)
-router.delete('/remove/:id', verifyToken, cartController.removeFromCart);
+router.get("/", verifyToken, async (req, res) => {
+  try {
+    const items = await CartItem.findAll({
+      where: { userId: req.user.id }, 
+      include: [{ model: Product, as: "product" }],
+      order: [['createdAt', 'ASC']],
+    });
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.put("/:id", verifyToken, async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    const item = await CartItem.findByPk(req.params.id);
+
+    if (!item) return res.status(404).json({ message: "Item tidak ditemukan" });
+
+    item.quantity = quantity;
+    await item.save();
+
+    res.json(item);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Hapus item dari keranjang
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const item = await CartItem.findByPk(req.params.id);
+    if (!item) return res.status(404).json({ message: "Item tidak ditemukan" });
+
+    await item.destroy();
+    res.json({ message: "Item dihapus" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 module.exports = router;

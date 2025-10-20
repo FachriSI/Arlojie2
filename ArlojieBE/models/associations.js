@@ -7,23 +7,20 @@ const OrderItem = require('./order_items'); // Pastikan path ini benar ke file m
 const CartItem = require('./cart_items'); // Pastikan path ini benar ke file model CartItem Anda
 
 // Relasi User
-User.hasMany(Order, { foreignKey: 'user_id' });
-User.hasMany(CartItem, { foreignKey: 'user_id' });
-Order.belongsTo(User, { foreignKey: 'user_id' });
+User.hasMany(Order, { foreignKey: 'userId', as: 'orders' });
+User.hasMany(CartItem, { foreignKey: 'userId' });
 
 // Relasi Product
-Product.hasMany(OrderItem, { foreignKey: 'product_id' });
-Product.hasMany(CartItem, { foreignKey: 'product_id' });
-OrderItem.belongsTo(Product, { foreignKey: 'product_id' });
-CartItem.belongsTo(Product, { foreignKey: 'product_id' });
+Product.hasMany(OrderItem, { foreignKey: 'productId' });
+Product.hasMany(CartItem, { foreignKey: 'productId', as: 'cartItems' });
+
+CartItem.belongsTo(User, { foreignKey: 'userId'});
+CartItem.belongsTo(Product, { foreignKey: 'productId', as: 'product' });
 
 // Relasi Order
-Order.hasMany(OrderItem, { foreignKey: 'order_id' });
-OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
+Order.hasMany(OrderItem, { foreignKey: 'orderId' });
+Order.belongsTo(User, { foreignKey: 'userId', as: 'User' });
+OrderItem.belongsTo(Order, { foreignKey: 'orderId' });
+OrderItem.belongsTo(Product, { foreignKey: 'productId' });
 
-// Tambahan: Pastikan model-model lain juga memiliki relasi yang sesuai
-// Misalnya, jika OrderItem memiliki harga saat itu:
-// OrderItem.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
-
-// Ekspor semua model agar bisa diakses di tempat lain jika diperlukan
 module.exports = { User, Product, Order, OrderItem, CartItem };

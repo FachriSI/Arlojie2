@@ -12,7 +12,7 @@ exports.getAllOrders = async (req, res) => {
     const orders = await Order.findAll({
       where,
       include: [
-        { model: User, attributes: ['id', 'name', 'email'] },
+        { model: User, as: 'User', attributes: ['id', 'name', 'email'] },
         { model: OrderItem, include: [Product] }
       ],
       order: [['createdAt', 'DESC']]
@@ -46,7 +46,7 @@ exports.getOrderDetail = async (req, res) => {
     const orderId = req.params.id;
     const order = await Order.findByPk(orderId, {
       include: [
-        { model: User, attributes: ['id', 'name', 'email'] },
+        { model: User, as: 'User', attributes: ['id', 'name', 'email'] },
         { model: OrderItem, include: [Product] }
       ]
     });

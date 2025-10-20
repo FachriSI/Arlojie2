@@ -1,41 +1,40 @@
 const User = require('../models/users');
 const Product = require('../models/products');
 const Order = require('../models/orders');
+const { Sequelize } = require('sequelize');
 
-// Ambil semua user
 const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.findAll({
-      attributes: ['id', 'name', 'email', 'role', 'status']
-    });
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+    try {
+        // Query ini hanya mengambil semua data dari tabel 'users'
+        const users = await User.findAll({
+          attributes: ['id', 'name', 'email', 'role', 'status', 'createdAt'],
+            order: [['createdAt', 'DESC']]
+        });
+        res.json(users);
+    } catch (error) {
+        console.error("ERROR in getAllUsers:", error);
+        res.status(500).json({ message: "Terjadi kesalahan pada server", error: error.message });
+    }
 };
 
-// Ambil user by id
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id, {
-      attributes: ['id', 'name', 'email', 'role', 'status']
-    });
+  const user = await User.findByPk(req.params.id, {
+    attributes: ['id', 'name', 'email', 'role', 'status', 'createdAt'] 
+});
     if (!user) return res.status(404).json({ message: 'User tidak ditemukan' });
-
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Ubah status user (aktif/nonaktif)
 const toggleUserStatus = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ message: 'User tidak ditemukan' });
 
-    // misal status user = aktif/nonaktif
-    user.status = user.status === 'active' ? 'inactive' : 'active';
+    user.status = user.status === 'active' ? 'blocked' : 'active';
     await user.save();
 
     res.json({ message: 'Status user diperbarui', user });
@@ -43,7 +42,6 @@ const toggleUserStatus = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 const getDashboardStats = async (req, res) => {
   try {
     const userCount = await User.count();

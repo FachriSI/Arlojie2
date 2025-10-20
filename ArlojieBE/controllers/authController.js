@@ -32,6 +32,10 @@ exports.login = async (req, res) => {
     if (!match) {
       return res.status(401).json({ message: 'Password salah' });
     }
+    // Prevent login if user is blocked
+    if (String(user.status || '').toLowerCase() === 'blocked') {
+      return res.status(403).json({ message: 'Akun ini diblokir. Hubungi administrator.' });
+    }
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
