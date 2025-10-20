@@ -1,6 +1,9 @@
 import React from "react";
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -21,8 +24,13 @@ import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminUserDetail from "./pages/Admin/AdminUserDetail";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminOrderDetail from "./pages/Admin/AdminOrderDetail";
-import AdminProductsNew from "./pages/Admin/AdminProductsNew";
+import AdminProductsNew from "./pages/Admin/AdminProductsNew"; 
 import AddProduct from "./pages/Admin/AddProduct";
+import EditProduct from "./pages/Admin/EditProduct"; 
+import AdminAnalytics from "./pages/Admin/AdminAnalytics";
+import Categories from "./pages/Admin/Categories";
+import EditCategory from "./pages/Admin/EditCategory";
+import AddCategory from "./pages/Admin/AddCategory";
 
 function App() {
   return (
@@ -33,6 +41,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          
           {/* User */}
           <Route path="/home" element={<Home />} />
           <Route path="/wishlist" element={<Wishlist />} />
@@ -40,7 +49,9 @@ function App() {
           <Route path="/keranjang" element={<Keranjang />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/view" element={<View />} />
+          <Route path="/view/:id" element={<View />} />
           <Route path="/ordermanage" element={<Ordermanage />} />
+          
           {/* Admin */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<AdminDashboard />} />
@@ -48,10 +59,18 @@ function App() {
             <Route path="users/:id" element={<AdminUserDetail />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="orders/:id" element={<AdminOrderDetail />} />
-            {/* Tambahkan rute untuk Product Management di sini */}
+            <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="categories/edit/:id" element={<EditCategory />} />
+            <Route path="EditCategory/edit/:id" element={<EditCategory />} />
+            <Route path="categories/add" element={<AddCategory />} />
+            
+            {/* Product Management */}
             <Route path="products" element={<AdminProductsNew />} />
             <Route path="products/add" element={<AddProduct />} />
+            <Route path="products/edit/:id" element={<EditProduct />} /> 
           </Route>
+          
           {/* 404 Not Found - harus di paling bawah */}
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -59,4 +78,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;
