@@ -13,6 +13,7 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminOrderRoutes = require('./routes/adminOrderRoutes');
 const adminAnalyticsRoutes = require('./routes/adminAnalyticsRoutes');
+const adminDashboardRoutes = require('./routes/adminDashboardRoutes');
 
 const path = require("path");
 const app = express();
@@ -33,6 +34,9 @@ app.use('/api/admin', adminOrderRoutes);
 app.use('/api/admin', adminUserRoutes); 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/api/admin', adminAnalyticsRoutes);
+app.use('/api/admin', adminDashboardRoutes);
+app.use('/uploads', express.static('uploads'));
+
 
 app.get('/', (req, res) => {
   res.send('API berjalan dengan baik!');
